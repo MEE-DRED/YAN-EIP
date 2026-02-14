@@ -9,39 +9,38 @@
 const organizationsData = [
     {
         id: 1,
-        name: "Youth Innovation Hub",
-        description: "Fostering entrepreneurship and innovation among young Rwandans through technology and mentorship.",
-        image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400"
+        name: "Care and Help Child Organization",
+        description: "From a Single Act of Kindness, a Ripple of Hope.",
+        details: "Founded in 2018, Care and Help Child Organization stands as a beacon of hope for vulnerable children. It is dedicated to breaking barriers to education, ensuring safety, fostering mental well‑being, and empowering young minds to build brighter, more equitable futures.",
+        image: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=400"
     },
     {
         id: 2,
-        name: "Green Youth Alliance",
-        description: "Environmental conservation and climate action led by passionate young environmentalists.",
-        image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400"
+        name: "WHAT IF‑Rwanda",
+        description: "Be the Source of Their Smile.",
+        details: "WHAT IF‑Rwanda nurtures vulnerable children through mentorship at the Iramiro Center. Mentors serve as “aunties” and “uncles,” forming enduring bonds that bring stability and hope.<ul><li>Clean water access improved through water tanks and filtration systems.</li><li>Consistent provision of school fees and materials.</li><li>Ongoing emotional and material support from mentors and sponsors.</li></ul>",
+        image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400"
     },
     {
         id: 3,
-        name: "Girls Code Rwanda",
-        description: "Empowering young women through technology education and digital skills training.",
-        image: "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=400"
+        name: "Aspire Debate Rwanda",
+        description: "Advancing quality education through debate.",
+        details: "Aspire Debate Rwanda advances quality education through debate, cultivating critical thinking and articulate communication. Through youth workshops, participants build public speaking, research, teamwork, and collaborative problem‑solving skills that translate into leadership.",
+        image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400"
     },
     {
         id: 4,
-        name: "Health Advocates Network",
-        description: "Youth-led health awareness and community wellness initiatives across Rwanda.",
-        image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400"
+        name: "Informed Future Generations (IFG)",
+        description: "Cultivating informed decision‑makers across Rwanda.",
+        details: "IFG cultivates informed decision‑makers by providing education on sexual reproductive health and rights, HIV/AIDS, substance abuse, and mental health. Operating across Rwamagana, Gatsibo, Kayonza, Ngoma, and Kirehe, IFG’s “Like Your Sister” program addresses gender‑based violence, teenage pregnancies, and gender inequality to promote a safer, more inclusive society.",
+        image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400"
     },
     {
         id: 5,
-        name: "Arts & Culture Collective",
-        description: "Celebrating and preserving Rwandan culture through youth-driven artistic expression.",
-        image: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=400"
-    },
-    {
-        id: 6,
-        name: "Sports for Development",
-        description: "Using sports as a tool for social change and youth empowerment in communities.",
-        image: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400"
+        name: "OAZIS Health",
+        description: "Bridging Gaps for Marginalized Communities.",
+        details: "Founded 2020 • Located in Bugesera (Nyamata). OAZIS Health is a youth‑led organization addressing urgent health needs of marginalized and impoverished communities. Its vision is a world where everyone has an equal opportunity to live a healthy, dignified, and fulfilling life, and its mission is to save lives and improve health by promoting equity and access for all.",
+        image: "https://images.unsplash.com/photo-1504814532849-92719b106a4b?w=400"
     }
 ];
 
@@ -63,6 +62,21 @@ const modulesData = [
                 name: "Leadership Handbook",
                 url: "https://drive.google.com/file/d/1IXJCsNsmhto7tlfB2eGga2cCgHhYnnQE/view",
                 size: "2.5 MB"
+            },
+            {
+                type: "slides",
+                name: "Leadership Youth NGO",
+                url: "https://docs.google.com/presentation/d/1DFuCiZCcJd4YRrWwa37Br449ZA_-3Snu/edit?usp=sharing&ouid=108406441382668787776&rtpof=true&sd=true"
+            },
+            {
+                type: "slides",
+                name: "Resilience Adaptive Mindset",
+                url: "https://docs.google.com/presentation/d/1kPQH7bWzo7o9hxaIe-2_Tm4A7vNbW7NR/edit?usp=drive_link&ouid=108406441382668787776&rtpof=true&sd=true"
+            },
+            {
+                type: "slides",
+                name: "Soft Skills Self Management",
+                url: "https://docs.google.com/presentation/d/1bDz2FJ2KJwUfQU31Gv88kNrTAArbIIzc/edit?usp=drive_link&ouid=108406441382668787776&rtpof=true&sd=true"
             },
             {
                 type: "video",
@@ -785,6 +799,18 @@ function initializeOrganizations() {
         const card = createOrganizationCard(org);
         grid.appendChild(card);
     });
+
+    if (grid) {
+        grid.addEventListener('click', (event) => {
+            const link = event.target.closest('.org-link');
+            if (!link) {
+                return;
+            }
+            event.preventDefault();
+            const orgId = parseInt(link.dataset.orgId, 10);
+            openOrganizationModal(orgId);
+        });
+    }
     
     // Add organization button (admin only)
     const addOrgBtn = document.getElementById('addOrgBtn');
@@ -812,7 +838,7 @@ function createOrganizationCard(org) {
         <div class="org-content">
             <h3 class="org-name">${org.name}</h3>
             <p class="org-description">${org.description}</p>
-            <a href="#" class="org-link">
+            <a href="#" class="org-link" data-org-id="${org.id}">
                 Learn More
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -821,6 +847,30 @@ function createOrganizationCard(org) {
         </div>
     `;
     return card;
+}
+
+function openOrganizationModal(orgId) {
+    const org = organizationsData.find(item => item.id === orgId);
+    if (!org) {
+        return;
+    }
+
+    const title = document.getElementById('orgModalTitle');
+    const body = document.getElementById('orgModalBody');
+    const image = document.getElementById('orgModalImage');
+
+    if (title) {
+        title.textContent = org.name;
+    }
+    if (body) {
+        body.innerHTML = org.details || org.description;
+    }
+    if (image) {
+        image.src = org.image;
+        image.alt = org.name;
+    }
+
+    openModal('orgDetailsModal');
 }
 
 function addOrganization() {
