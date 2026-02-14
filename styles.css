@@ -4,25 +4,25 @@
 
 :root {
     /* Colors */
-    --primary: #06b6d4;
-    --primary-dark: #0891b2;
-    --secondary: #1e293b;
-    --accent: #f59e0b;
+    --primary: #30D5C8;
+    --primary-dark: #20B2AA;
+    --secondary: #0F3D4C;
+    --accent: #87CEEB;
     
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-    --gradient-hero: linear-gradient(135deg, #0891b2 0%, #1e40af 50%, #6366f1 100%);
-    --gradient-card: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+    --gradient-primary: linear-gradient(135deg, #30D5C8 0%, #87CEEB 100%);
+    --gradient-hero: linear-gradient(135deg, #20B2AA 0%, #5ECBF1 55%, #E6F7FF 100%);
+    --gradient-card: linear-gradient(135deg, rgba(48, 213, 200, 0.12) 0%, rgba(135, 206, 235, 0.12) 100%);
     
     /* Backgrounds */
-    --bg-primary: #F9FAFB;
+    --bg-primary: #F3FBFF;
     --bg-card: #ffffff;
-    --bg-dark: #0f172a;
+    --bg-dark: #0F2E36;
     
     /* Text */
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --text-light: #94a3b8;
+    --text-primary: #0F3D4C;
+    --text-secondary: #2D6A7A;
+    --text-light: #6AA9B8;
     
     /* Spacing */
     --space-xs: 0.5rem;
@@ -34,8 +34,8 @@
     --space-3xl: 6rem;
     
     /* Typography */
-    --font-display: 'Syne', sans-serif;
-    --font-body: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: 'Poppins', sans-serif;
+    --font-body: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
     
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
