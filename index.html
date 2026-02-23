@@ -21,7 +21,7 @@
                 <a href="/index.html" class="nav-link active">Home</a>
                 <a href="#about" class="nav-link">About</a>
                 <a href="/pages/members/members.html" class="nav-link">Network</a>
-                <a href="#capacity" class="nav-link">Capacity Building</a>
+                <a href="/pages/dashboard/memberDashboard.html" class="nav-link">Capacity Building</a>
                 <a href="#opportunities" class="nav-link" data-role="member,admin">Opportunities</a>
                 <a href="#events" class="nav-link">Events</a>
                 <a href="#gallery" class="nav-link">Gallery</a>
@@ -35,10 +35,12 @@
                     <button class="role-btn" data-role="admin">Admin</button>
                 </div>
                 
-                <button class="login-btn" id="loginBtn">
+                <a href="/pages/auth/login.html">
+                    <button class="login-btn" id="loginBtn">
                     <span class="login-text">Login</span>
                     <span class="login-icon">→</span>
                 </button>
+            </a>
                 
                 <div class="profile-dropdown" id="profileDropdown" style="display: none;">
                     <button class="profile-btn" id="profileBtn">
@@ -284,7 +286,7 @@
                     <h3>Members-Only Access</h3>
                     <p>Our comprehensive capacity building program includes structured training modules, assignments, and certifications. Login as a member to access the full learning management system.</p>
                     <button class="btn btn-primary" onclick="document.getElementById('loginBtn').click()">
-                        <span>Login to Access</span>
+                        <a href="/pages/auth/login.html"><span>Login to Access</span></a>
                     </button>
                 </div>
             </div>

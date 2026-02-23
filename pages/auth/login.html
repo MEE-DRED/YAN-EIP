@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YAN - Login</title>
+  <link rel="stylesheet" href="/assets/css/pages/login.css"/>
+  <link rel="stylesheet" href="/styles.css"/>
+</head>
+<body class="yan-login">
+  <div id="navbarMount"></div>
+
+  <main class="main">
+    <section class="card" aria-label="Login card">
+      <h1 class="title">Login</h1>
+      <p class="subtitle">Sign in to access your portal</p>
+
+      <div class="alert" id="alert" role="alert" aria-live="polite"></div>
+
+      <form id="loginForm" novalidate>
+        <label class="field">
+          <span class="label">Enter Your Email</span>
+          <input
+          id="identifier"
+          name="identifier"
+          type="text"
+          placeholder="email@gmail.com"
+          autocomplete="username"
+          required
+          />
+        </label>
+
+        <label class="field">
+          <span class="label">Password</span>
+          <div class="passwordWrap">
+            <input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Enter Your Password"
+            autocomplete="current-password"
+            required
+            />
+            <button
+            type="button"
+            class="toggle"
+            id="togglePassword"
+            aria-label="Show password">Show</button>
+          </div>
+        </label>
+
+        <div class="row">
+            <label class="check">
+              <input type="checkbox" id="rememberMe" />
+              <span>Remember me</span>
+            </label>
+            <a class="link" href="#" id="forgotLink">Forgot password?</a>
+        </div>
+
+        <button class="btn" id="loginBtn" type="submit">Login</button>
+
+      </form>
+    </section>
+  </main>
+
+  <div id="footerMount"></div>
+
+  <script src="/apps.js"></script>
+  <script src="/assets/JS/include.js"></script>
+  <script src="/assets/JS/login.js"></script>
+</body>
+</html>

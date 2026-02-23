@@ -1,0 +1,368 @@
+<!-- yan-application-form.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YAN | Organization Application Form</title>
+  <link rel="stylesheet" href="/assets/css/pages/apply.css" />
+  <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body class="yan-app">
+  <div id="navbarMount"></div>
+
+  <main class="yan-app__main">
+    <section class="yan-app__card" aria-label="YAN application form card">
+      <header class="yan-app__header">
+        <h1 class="yan-app__title">YAN Organization Application</h1>
+        <p class="yan-app__subtitle">
+          Please complete all <strong>mandatory</strong> fields. Supporting documents are optional but recommended.
+        </p>
+      </header>
+
+      <!-- Form Messages -->
+      <div class="yan-app__alert" id="formAlert" role="alert" aria-live="polite"></div>
+
+      <form id="yanApplicationForm" class="yan-app__form" novalidate>
+        <!-- =========================================================
+             SECTION 1: ORGANIZATION INFORMATION (MANDATORY)
+             ========================================================= -->
+        <fieldset class="yan-app__section">
+          <legend class="yan-app__legend">SECTION 1: ORGANIZATION INFORMATION (MANDATORY)</legend>
+
+          <div class="yan-app__grid">
+            <label class="yan-app__field">
+              <span class="yan-app__label">Organization Legal Name <span class="yan-app__req">*</span></span>
+              <input class="yan-app__input" type="text" name="orgLegalName" required placeholder="Enter legal name" />
+              <small class="yan-app__hint">Field type: Short text</small>
+            </label>
+
+            <label class="yan-app__field">
+              <span class="yan-app__label">Organization Acronym (if any)</span>
+              <input class="yan-app__input" type="text" name="orgAcronym" placeholder="e.g. YAN" />
+              <small class="yan-app__hint">Field type: Short text (Optional)</small>
+            </label>
+
+            <label class="yan-app__field">
+              <span class="yan-app__label">Year of Establishment <span class="yan-app__req">*</span></span>
+              <input class="yan-app__input" type="number" name="yearEstablished" required min="1900" max="2100" placeholder="YYYY" />
+              <small class="yan-app__hint">Field type: Year selector</small>
+            </label>
+
+            <label class="yan-app__field">
+              <span class="yan-app__label">Type of Organization <span class="yan-app__req">*</span></span>
+              <select class="yan-app__input" name="orgType" required>
+                <option value="" selected disabled>Select type</option>
+                <option>Youth-led NGO</option>
+                <option>Community-Based Organization</option>
+                <option>Student Association</option>
+                <option>Other</option>
+              </select>
+              <small class="yan-app__hint">Dropdown</small>
+            </label>
+
+            <label class="yan-app__field yan-app__field--full">
+              <span class="yan-app__label">Organizational Registration / Legal Status</span>
+              <input class="yan-app__file" type="file" name="legalStatusFile" accept=".pdf,.jpg,.jpeg,.png" />
+              <small class="yan-app__hint">
+                Field type: File upload (PDF, JPG/PNG). Optional. If unregistered, provide proof of ongoing activities.
+              </small>
+            </label>
+
+            <label class="yan-app__field yan-app__field--full">
+              <span class="yan-app__label">Mission Statement <span class="yan-app__req">*</span></span>
+              <textarea class="yan-app__textarea" name="missionStatement" required maxlength="2000" rows="5"
+                placeholder="Max 300 words"></textarea>
+              <small class="yan-app__hint">Field type: Long text (max 300 words)</small>
+            </label>
+
+            <label class="yan-app__field yan-app__field--full">
+              <span class="yan-app__label">Vision Statement <span class="yan-app__req">*</span></span>
+              <textarea class="yan-app__textarea" name="visionStatement" required maxlength="2000" rows="5"
+                placeholder="Max 300 words"></textarea>
+              <small class="yan-app__hint">Field type: Long text (max 300 words)</small>
+            </label>
+
+            <label class="yan-app__field yan-app__field--full">
+              <span class="yan-app__label">Core Values <span class="yan-app__req">*</span></span>
+              <textarea class="yan-app__textarea" name="coreValues" required maxlength="1500" rows="4"
+                placeholder="Max 200 words"></textarea>
+              <small class="yan-app__hint">Field type: Long text (max 200 words)</small>
+            </label>
+
+            <label class="yan-app__field yan-app__field--full">
+              <span class="yan-app__label">Strategic Plan (1–3 years)</span>
+              <input class="yan-app__file" type="file" name="strategicPlanFile" accept=".pdf,.doc,.docx" />
+              <small class="yan-app__hint">File upload (PDF/Word). Optional</small>
+            </label>
+
+            <label class="yan-app__field yan-app__field--full">
+              <span class="yan-app__label">Key Projects / Programs <span class="yan-app__req">*</span></span>
+              <textarea class="yan-app__textarea" name="keyProjects" required rows="6"
+                placeholder="Describe key projects/programs OR upload a file below if you prefer"></textarea>
+              <div class="yan-app__inlineUpload">
+                <input class="yan-app__file" type="file" name="keyProjectsFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
+              </div>
+              <small class="yan-app__hint">Long text or file upload (Required)</small>
+            </label>
+
+            <label class="yan-app__field yan-app__field--full">
+              <span class="yan-app__label">Organizational Structure (Optional)</span>
+              <input class="yan-app__file" type="file" name="orgStructureFile" accept=".pdf,.png,.jpg,.jpeg" />
+              <small class="yan-app__hint">Upload organogram/chart (PDF/PNG). Optional</small>
+            </label>
+
+            <label class="yan-app__field yan-app__field--full">
+              <span class="yan-app__label">Board of Directors / Leadership Team</span>
+              <input class="yan-app__file" type="file" name="boardListFile" accept=".pdf,.doc,.docx" />
+              <small class="yan-app__hint">Upload list (PDF/Doc). Optional</small>
+            </label>
+          </div>
+
+          <!-- Location & Contact Info -->
+          <div class="yan-app__subhead">Location & Contact Info <span class="yan-app__req">*</span></div>
+          <div class="yan-app__grid">
+            <label class="yan-app__field yan-app__field--full">
+              <span class="yan-app__label">Headquarters Address (Province/District/Sector/Cell/Village) <span class="yan-app__req">*</span></span>
+              <input class="yan-app__input" type="text" name="hqAddress" required placeholder="Enter full address details" />
+            </label>
+
+            <label class="yan-app__field">
+              <span class="yan-app__label">Phone <span class="yan-app__req">*</span></span>
+              <input class="yan-app__input" type="tel" name="orgPhone" required placeholder="+250 ..." />
+            </label>
+
+            <label class="yan-app__field">
+              <span class="yan-app__label">Email <span class="yan-app__req">*</span></span>
+              <input class="yan-app__input" type="email" name="orgEmail" required placeholder="org@email.com" />
+            </label>
+
+            <label class="yan-app__field">
+              <span class="yan-app__label">Website (if any)</span>
+              <input class="yan-app__input" type="url" name="orgWebsite" placeholder="https://..." />
+            </label>
+
+            <label class="yan-app__field yan-app__field--full">
+              <span class="yan-app__label">Social media platforms (links, if any)</span>
+              <input class="yan-app__input" type="text" name="orgSocials" placeholder="e.g. Instagram:..., X:..., LinkedIn:..." />
+            </label>
+          </div>
+
+          <!-- Geographic Focus -->
+          <div class="yan-app__subhead">Geographic Focus / Coverage <span class="yan-app__req">*</span></div>
+          <div class="yan-app__grid">
+            <label class="yan-app__field yan-app__field--full">
+              <span class="yan-app__label">Where do you implement programs? <span class="yan-app__req">*</span></span>
+              <select class="yan-app__input" name="geoFocus" required multiple size="6">
+                <option>Kigali City</option>
+                <option>Eastern Province</option>
+                <option>Northern Province</option>
+                <option>Southern Province</option>
+                <option>Western Province</option>
+                <option>National (Across Rwanda)</option>
+                <option>Regional (Across countries)</option>
+              </select>
+              <small class="yan-app__hint">Dropdown / Multi-select (Hold Ctrl/Command to select multiple)</small>
+            </label>
+
+            <label class="yan-app__field yan-app__field--full">
+              <span class="yan-app__label">Proof of Legitimacy / Past Impact Evidence</span>
+              <input class="yan-app__file" type="file" name="impactEvidence" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple />
+              <small class="yan-app__hint">Upload reports, photos, or letters of recognition (Optional)</small>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- =========================================================
+             SECTION 2: ORGANIZATION REPRESENTATIVE INFORMATION
+             ========================================================= -->
+        <fieldset class="yan-app__section">
+          <legend class="yan-app__legend">SECTION 2: ORGANIZATION REPRESENTATIVE INFORMATION (MANDATORY)</legend>
+
+          <div class="yan-app__grid">
+            <label class="yan-app__field">
+              <span class="yan-app__label">Full Name of Representative / Main Contact <span class="yan-app__req">*</span></span>
+              <input class="yan-app__input" type="text" name="repFullName" required placeholder="Full name" />
+            </label>
+
+            <label class="yan-app__field">
+              <span class="yan-app__label">Role in Organization <span class="yan-app__req">*</span></span>
+              <select class="yan-app__input" name="repRole" required>
+                <option value="" selected disabled>Select role</option>
+                <option>Founder</option>
+                <option>Director</option>
+                <option>Program Manager</option>
+                <option>Other</option>
+              </select>
+            </label>
+
+            <label class="yan-app__field">
+              <span class="yan-app__label">Date of Birth <span class="yan-app__req">*</span></span>
+              <input class="yan-app__input" type="date" name="repDob" required />
+              <small class="yan-app__hint">Must fall within YAN youth range 20–35</small>
+            </label>
+
+            <label class="yan-app__field">
+              <span class="yan-app__label">Gender (Optional)</span>
+              <select class="yan-app__input" name="repGender">
+                <option value="" selected>Select (optional)</option>
+                <option>Female</option>
+                <option>Male</option>
+                <option>Non-binary</option>
+                <option>Prefer not to say</option>
+              </select>
+            </label>
+
+            <label class="yan-app__field">
+              <span class="yan-app__label">Phone Number <span class="yan-app__req">*</span></span>
+              <input class="yan-app__input" type="tel" name="repPhone" required placeholder="+250 ..." />
+            </label>
+
+            <label class="yan-app__field">
+              <span class="yan-app__label">Email Address <span class="yan-app__req">*</span></span>
+              <input class="yan-app__input" type="email" name="repEmail" required placeholder="name@email.com" />
+            </label>
+
+            <label class="yan-app__field yan-app__field--full">
+              <span class="yan-app__label">Upload ID / Proof of Identity <span class="yan-app__req">*</span></span>
+              <input class="yan-app__file" type="file" name="repIdFile" accept=".pdf,.jpg,.jpeg,.png" />
+              <small class="yan-app__hint">Conditional — required if requested during review (frontend: treated as required for now)</small>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- =========================================================
+             SECTION 3: ORGANIZATION ALIGNMENT & VALUES
+             ========================================================= -->
+        <fieldset class="yan-app__section">
+          <legend class="yan-app__legend">SECTION 3: ORGANIZATION ALIGNMENT & VALUES (LONG TEXT – MANDATORY)</legend>
+
+          <label class="yan-app__field yan-app__field--full">
+            <span class="yan-app__label">
+              Mission Alignment <span class="yan-app__req">*</span>
+              <span class="yan-app__q">“Why does your organization want to join YAN, and how does it align with YAN’s mission?”</span>
+            </span>
+            <textarea class="yan-app__textarea" name="missionAlignment" required rows="6" maxlength="3500"
+              placeholder="Max 500 words"></textarea>
+            <small class="yan-app__hint">Word limit: 500</small>
+          </label>
+
+          <label class="yan-app__field yan-app__field--full">
+            <span class="yan-app__label">
+              Values & Ethics <span class="yan-app__req">*</span>
+              <span class="yan-app__q">“How does your organization demonstrate honesty, integrity, inclusion, respect, and collaboration?”</span>
+            </span>
+            <textarea class="yan-app__textarea" name="valuesEthics" required rows="6" maxlength="3500"
+              placeholder="Max 500 words"></textarea>
+            <small class="yan-app__hint">Word limit: 500</small>
+          </label>
+
+          <label class="yan-app__field yan-app__field--full">
+            <span class="yan-app__label">
+              Community / Youth Engagement <span class="yan-app__req">*</span>
+              <span class="yan-app__q">“Describe your organization’s key programs, activities, and contributions to youth and community development.”</span>
+            </span>
+            <textarea class="yan-app__textarea" name="communityEngagement" required rows="10" maxlength="12000"
+              placeholder="1000–2000 words"></textarea>
+            <small class="yan-app__hint">Word limit: 1000–2000</small>
+          </label>
+
+          <label class="yan-app__field yan-app__field--full">
+            <span class="yan-app__label">
+              Skills & Potential Contribution to YAN <span class="yan-app__req">*</span>
+              <span class="yan-app__q">“List the top skills, resources, or networks your organization brings to YAN. How can you contribute to the network’s initiatives?”</span>
+            </span>
+            <textarea class="yan-app__textarea" name="skillsContribution" required rows="8" maxlength="7000"
+              placeholder="500–1000 words"></textarea>
+            <small class="yan-app__hint">Word limit: 500–1000</small>
+          </label>
+        </fieldset>
+
+        <!-- =========================================================
+             SECTION 4: REPRESENTATIVE COMMITMENT & GROWTH
+             ========================================================= -->
+        <fieldset class="yan-app__section">
+          <legend class="yan-app__legend">SECTION 4: REPRESENTATIVE COMMITMENT & GROWTH (MANDATORY)</legend>
+
+          <label class="yan-app__field yan-app__field--full">
+            <span class="yan-app__label">
+              Willingness to Learn / Grow <span class="yan-app__req">*</span>
+              <span class="yan-app__q">“How does your representative and organization plan to engage with mentorship and capacity-building opportunities?”</span>
+            </span>
+            <textarea class="yan-app__textarea" name="learnGrow" required rows="8" maxlength="7000"
+              placeholder="500–1000 words"></textarea>
+            <small class="yan-app__hint">Word limit: 500–1000</small>
+          </label>
+
+          <div class="yan-app__confirm">
+            <label class="yan-app__check">
+              <input type="checkbox" name="confirmParticipation" required />
+              <span>
+                We confirm that our organization and representative(s) will attend meetings, participate in activities,
+                and respect timelines and responsibilities. <span class="yan-app__req">*</span>
+              </span>
+            </label>
+          </div>
+
+          <label class="yan-app__field yan-app__field--full">
+            <span class="yan-app__label">
+              Explain participation plan <span class="yan-app__req">*</span>
+              <span class="yan-app__q">“Explain how your organization will ensure consistent participation in YAN activities.”</span>
+            </span>
+            <textarea class="yan-app__textarea" name="participationPlan" required rows="5" maxlength="2200"
+              placeholder="Max 300 words"></textarea>
+            <small class="yan-app__hint">Word limit: 300</small>
+          </label>
+        </fieldset>
+
+        <!-- =========================================================
+             SECTION 5: SUPPORTING DOCUMENTS (OPTIONAL / CONDITIONAL)
+             ========================================================= -->
+        <fieldset class="yan-app__section">
+          <legend class="yan-app__legend">SECTION 5: SUPPORTING DOCUMENTS (OPTIONAL / CONDITIONAL)</legend>
+
+          <p class="yan-app__note">
+            Upload additional documents to strengthen the application (optional but recommended):
+            photos of projects/events, annual reports, letters of support from partners/community.
+          </p>
+
+          <label class="yan-app__field yan-app__field--full">
+            <span class="yan-app__label">Supporting Documents (multiple files allowed)</span>
+            <input class="yan-app__file" type="file" name="supportingDocs" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple />
+          </label>
+        </fieldset>
+
+        <!-- =========================================================
+             SECTION 6: DECLARATION & SUBMISSION
+             ========================================================= -->
+        <fieldset class="yan-app__section">
+          <legend class="yan-app__legend">SECTION 6: DECLARATION & SUBMISSION</legend>
+
+          <label class="yan-app__check yan-app__check--block">
+            <input type="checkbox" name="declaration" required />
+            <span>
+              We confirm that all information provided is true and accurate to the best of our knowledge.
+              <span class="yan-app__req">*</span>
+            </span>
+          </label>
+
+          <div class="yan-app__actions">
+            <button type="button" class="yan-app__btn yan-app__btn--ghost" id="saveDraftBtn">Save Draft</button>
+            <button type="submit" class="yan-app__btn" id="submitBtn">Submit Application</button>
+          </div>
+
+          <p class="yan-app__footnote">
+            After submission, the application moves to <strong>Submitted</strong> status for Committee review.
+          </p>
+        </fieldset>
+      </form>
+    </section>
+  </main>
+
+  <div id="footerMount"></div>
+
+  <script src="/assets/JS/yanApplicationForm.js"></script>
+  <script src="/assets/JS/include.js"></script>
+</body>
+</html>
