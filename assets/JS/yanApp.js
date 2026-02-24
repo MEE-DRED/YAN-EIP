@@ -40,8 +40,7 @@ function serializeFormToJson(formEl) {
   const fd = new FormData(formEl);
 
   // Multi-select values:
-  const geo = fd.getAll("geoFocus");
-  data.geoFocus = geo;
+  data.geoFocus = fd.get("geoFocus") ||"";
 
   // Text values:
   for (const [key, value] of fd.entries()) {

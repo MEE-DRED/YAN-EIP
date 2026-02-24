@@ -154,16 +154,20 @@
           <div class="yan-app__grid">
             <label class="yan-app__field yan-app__field--full">
               <span class="yan-app__label">Where do you implement programs? <span class="yan-app__req">*</span></span>
-              <select class="yan-app__input" name="geoFocus" required multiple size="6">
-                <option>Kigali City</option>
-                <option>Eastern Province</option>
-                <option>Northern Province</option>
-                <option>Southern Province</option>
-                <option>Western Province</option>
-                <option>National (Across Rwanda)</option>
-                <option>Regional (Across countries)</option>
+
+              <!-- Dropdown (single select) -->
+              <select class="yan-app__input" name="geoFocus" required>
+                <option value="" selected disabled>Select coverage</option>
+                <option value="Kigali City">Kigali City</option>
+                <option value="Eastern Province">Eastern Province</option>
+                <option value="Northern Province">Northern Province</option>
+                <option value="Southern Province">Southern Province</option>
+                <option value="Western Province">Western Province</option>
+                <option value="National (Across Rwanda)">National (Across Rwanda)</option>
+                <option value="Regional (Across countries)">Regional (Across countries)</option>
               </select>
-              <small class="yan-app__hint">Dropdown / Multi-select (Hold Ctrl/Command to select multiple)</small>
+
+              <small class="yan-app__hint">Dropdown (Choose one)</small>
             </label>
 
             <label class="yan-app__field yan-app__field--full">
