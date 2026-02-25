@@ -260,8 +260,25 @@
                 </button>
             </div>
             
-            <div class="organizations-grid" id="organizationsGrid">
-                <!-- Organizations will be populated by JavaScript -->
+            <div class="organization-categories" id="organizationsGrid">
+                <!-- Sector categories and organization cards will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Rating Classification -->
+    <section class="impact-rating-section" id="impactRating">
+        <div class="container">
+            <div class="section-header">
+                <div>
+                    <div class="section-label">Impact Evidence</div>
+                    <h2 class="section-title">Impact Rating Classification</h2>
+                    <p class="section-description">Classification of spotlight organizations based on documented scale, sustainability, and measurable outcomes.</p>
+                </div>
+            </div>
+
+            <div class="impact-rating-grid" id="impactRatingGrid">
+                <!-- Impact rating cards will be populated by JavaScript -->
             </div>
         </div>
     </section>
@@ -794,15 +811,16 @@
         </div>
     </div>
 
-    <div class="modal" id="orgDetailsModal">
+    <div class="modal" id="orgDetailsModal" role="dialog" aria-modal="true" aria-labelledby="orgModalTitle" aria-describedby="orgModalDescription" tabindex="-1">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="orgModalTitle">Organization</h3>
-                <button class="modal-close" data-modal="orgDetailsModal">&times;</button>
+                <button class="modal-close" data-modal="orgDetailsModal" aria-label="Close organization details">&times;</button>
             </div>
             <div class="modal-body">
-                <img src="" alt="" id="orgModalImage" class="org-modal-image">
-                <div id="orgModalBody" class="org-modal-body"></div>
+                <div id="orgModalBody" class="org-modal-body">
+                    <p id="orgModalDescription"></p>
+                </div>
             </div>
         </div>
     </div>

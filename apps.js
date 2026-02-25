@@ -10,37 +10,244 @@ const organizationsData = [
     {
         id: 1,
         name: "Care and Help Child Organization",
-        description: "From a Single Act of Kindness, a Ripple of Hope.",
-        details: "Founded in 2018, Care and Help Child Organization stands as a beacon of hope for vulnerable children. It is dedicated to breaking barriers to education, ensuring safety, fostering mental well‑being, and empowering young minds to build brighter, more equitable futures.",
-        image: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=400"
+        slug: "care-and-help-child-organization",
+        description: "Supports vulnerable children in Rwanda through education access, safe spaces, and mental well-being support.",
+        details: "Supports vulnerable children in Rwanda by providing access to education, creating safe spaces free from violence, and promoting mental well-being. Founded from a single act of kindness, they have grown to help over 570 children.",
+        foundingYear: 2018,
+        keyPrograms: ["Education access and school support", "Safe spaces for vulnerable children", "Child mental well-being initiatives"],
+        impactHighlights: ["Grew support base from 35 to 574 children", "Holistic support across education, safety, and well-being"],
+        sectors: ["EDUCATION"]
     },
     {
         id: 2,
-        name: "WHAT IF‑Rwanda",
-        description: "Be the Source of Their Smile.",
-        details: "WHAT IF‑Rwanda nurtures vulnerable children through mentorship at the Iramiro Center. Mentors serve as “aunties” and “uncles,” forming enduring bonds that bring stability and hope.<ul><li>Clean water access improved through water tanks and filtration systems.</li><li>Consistent provision of school fees and materials.</li><li>Ongoing emotional and material support from mentors and sponsors.</li></ul>",
-        image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400"
+        name: "WHAT IF-Rwanda",
+        slug: "what-if-rwanda",
+        description: "Provides love, mentorship, and essential support for vulnerable children through sponsorship and family-style care.",
+        details: "Provides love and mentorship to vulnerable children, pairing them with dedicated \"aunties\" and \"uncles\" who offer guidance and support. They also provide essential needs like food, education, and healthcare through child sponsorship.",
+        keyPrograms: ["Iramiro Center mentorship model", "Child sponsorship for education and healthcare", "Water and sanitation support"],
+        impactHighlights: ["Installed water tanks and filtration systems", "Consistent school fee and materials support"],
+        sectors: ["CHILD PROTECTION"]
     },
     {
         id: 3,
         name: "Aspire Debate Rwanda",
-        description: "Advancing quality education through debate.",
-        details: "Aspire Debate Rwanda advances quality education through debate, cultivating critical thinking and articulate communication. Through youth workshops, participants build public speaking, research, teamwork, and collaborative problem‑solving skills that translate into leadership.",
-        image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400"
+        slug: "aspire-debate-rwanda",
+        description: "Empowers youth through debate, building critical thinking, public speaking, and leadership skills.",
+        details: "Empowers young people through the art of debate, teaching them critical thinking, public speaking, and leadership skills. They work with schools across Rwanda to help youth find their voice and advocate for issues that matter to them.",
+        foundingYear: 2014,
+        keyPrograms: ["School debate clubs and mentorship", "Inter-school and university championships", "Youth civic voice and advocacy training"],
+        impactHighlights: ["Partnerships with 50+ secondary schools", "22 higher learning institutions engaged"],
+        sectors: ["EDUCATION"]
     },
     {
         id: 4,
         name: "Informed Future Generations (IFG)",
-        description: "Cultivating informed decision‑makers across Rwanda.",
-        details: "IFG cultivates informed decision‑makers by providing education on sexual reproductive health and rights, HIV/AIDS, substance abuse, and mental health. Operating across Rwamagana, Gatsibo, Kayonza, Ngoma, and Kirehe, IFG’s “Like Your Sister” program addresses gender‑based violence, teenage pregnancies, and gender inequality to promote a safer, more inclusive society.",
-        image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400"
+        slug: "informed-future-generations-ifg",
+        description: "Educates youth on SRH, HIV prevention, and mental health through clubs and community outreach.",
+        details: "Educates young people on sexual reproductive health, HIV/AIDS prevention, and mental health. Through school clubs and community outreach, they help youth make informed decisions about their health and futures.",
+        foundingYear: 2023,
+        keyPrograms: ["School health clubs", "Community SRHR outreach", "Youth-informed health education"],
+        impactHighlights: ["Reached 5,000+ students", "50+ outreach events and 40,000+ online views"],
+        sectors: ["HEALTH"]
     },
     {
         id: 5,
         name: "OAZIS Health",
-        description: "Bridging Gaps for Marginalized Communities.",
-        details: "Founded 2020 • Located in Bugesera (Nyamata). OAZIS Health is a youth‑led organization addressing urgent health needs of marginalized and impoverished communities. Its vision is a world where everyone has an equal opportunity to live a healthy, dignified, and fulfilling life, and its mission is to save lives and improve health by promoting equity and access for all.",
-        image: "https://images.unsplash.com/photo-1504814532849-92719b106a4b?w=400"
+        slug: "oazis-health",
+        description: "A youth-led health organization bridging healthcare gaps for marginalized communities.",
+        details: "A youth-led health organization working to bridge gaps in healthcare for marginalized communities. They train health workers, fight antimicrobial resistance, and promote health equity through innovative programs and digital solutions.",
+        foundingYear: 2020,
+        keyPrograms: ["Healthcare worker training", "Antimicrobial resistance campaigns", "Digital health innovation support"],
+        impactHighlights: ["850+ healthcare providers trained", "500,000+ people reached in awareness campaigns"],
+        sectors: ["HEALTH"]
+    },
+    {
+        id: 6,
+        name: "Helping Heart Family Rwanda (HHFR)",
+        slug: "helping-heart-family-rwanda-hhfr",
+        description: "Protects children's rights through education support, legal aid, and recovery pathways.",
+        details: "Champions the rights of children by providing educational support, legal aid, and pathways to recovery for those affected by substance abuse. They have helped reintegrate former street children with their families and back into school.",
+        foundingYear: 2021,
+        keyPrograms: ["Child education support", "Legal aid services", "Family reintegration pathways"],
+        impactHighlights: ["500+ children supported in education", "10,000+ individuals accessed legal aid"],
+        sectors: ["CHILD PROTECTION"]
+    },
+    {
+        id: 7,
+        name: "Rwanda We Want Organization (RWW)",
+        slug: "rwanda-we-want-organization-rww",
+        description: "Develops young leaders and supports marginalized youth, including teen mothers.",
+        details: "Develops young leaders and empowers marginalized youth, including teen mothers, through leadership training, sexual health education, and support for healing from transgenerational trauma.",
+        foundingYear: 2015,
+        keyPrograms: ["Leadership development pathway", "SRHR education for youth", "Trauma healing and psychosocial support"],
+        impactHighlights: ["100+ graduates empowered", "2,000+ youth reached with SRH education"],
+        sectors: ["YOUTH EMPOWERMENT"]
+    },
+    {
+        id: 8,
+        name: "Heza Initiative",
+        slug: "heza-initiative",
+        description: "Improves maternal and child nutrition through gardens, education, and One Egg A Day.",
+        details: "Fights malnutrition by improving maternal and child nutrition through home gardens, nutrition education, and programs like \"One Egg A Day\" that provide daily nutrition to vulnerable children.",
+        foundingYear: 2022,
+        keyPrograms: ["One Egg A Day nutrition support", "Home garden rollouts", "Nutrition education for caregivers"],
+        impactHighlights: ["200 children supported with daily nutrition", "Partnerships with UNICEF, RBC, and NCDA"],
+        sectors: ["HEALTH", "AGRICULTURE"]
+    },
+    {
+        id: 9,
+        name: "UR Public Health Students' Association (URPHSA)",
+        slug: "urphsa",
+        description: "Connects future public health professionals with real community health needs.",
+        details: "A student-led association that connects future public health professionals with real community needs. They run programs on disease prevention, sexual health, sanitation, and nutrition across Rwandan communities.",
+        foundingYear: 2017,
+        keyPrograms: ["Student-led public health outreach", "NCD and SRHR awareness", "WASH and nutrition community action"],
+        impactHighlights: ["Established student association since 2017", "Bridges academic training with direct community services"],
+        sectors: ["HEALTH"]
+    },
+    {
+        id: 10,
+        name: "Rise and Live Organization",
+        slug: "rise-and-live-organization",
+        description: "Supports teen mothers with counseling, reproductive health education, and advocacy training.",
+        details: "Supports teen mothers by providing mental health counseling, reproductive health education, and advocacy training. They help young mothers build confidence, make informed decisions, and create better lives for themselves and their children.",
+        keyPrograms: ["Teen mother counseling support", "Reproductive health education", "Advocacy and confidence building"],
+        impactHighlights: ["Delivers targeted support for teen mothers", "Strong transformation stories in Huye communities"],
+        sectors: ["HEALTH"]
+    },
+    {
+        id: 11,
+        name: "Nursing Research Club Organization",
+        slug: "nursing-research-club-organization",
+        description: "Builds research and education leadership among early-career nurses.",
+        details: "Empowers early-career nurses to become researchers and educators. They bridge the gap between healthcare knowledge and community understanding by conducting research and running health education programs.",
+        foundingYear: 2021,
+        keyPrograms: ["Annual nursing symposiums", "Practice-to-community knowledge transfer", "Health education campaigns"],
+        impactHighlights: ["Hosted annual nursing symposiums in 2023 and 2024", "Launching Rwamagana Health Connect"],
+        sectors: ["HEALTH"]
+    },
+    {
+        id: 12,
+        name: "Inshuti Health Organization (IHO)",
+        slug: "inshuti-health-organization-iho",
+        description: "Promotes health equity through SRHR, nutrition, and gender equality programs.",
+        details: "Promotes health equity in underserved communities through sexual and reproductive health education, gender equality programs, and nutrition initiatives. They work to ensure everyone has access to quality healthcare information and services.",
+        foundingYear: 2020,
+        keyPrograms: ["HER CHOICE program", "Learn to Unlearn initiatives", "Community nutrition and SRHR sessions"],
+        impactHighlights: ["Strong localized impact in Nyagatare District", "Community-led model for health equity"],
+        sectors: ["HEALTH"]
+    },
+    {
+        id: 13,
+        name: "MINDORA HEALTH",
+        slug: "mindora-health",
+        description: "Uses AI and gamified tools to deliver stigma-free youth mental health support.",
+        details: "Uses AI technology and a unique gameboard to make mental health support accessible and stigma-free for young people. They offer online therapy, mental health assessments, and suicide prevention tools tailored for youth.",
+        foundingYear: 2022,
+        keyPrograms: ["AI-powered mental health platform", "Online therapy and assessments", "Youth suicide prevention tools"],
+        impactHighlights: ["Reached 1,000+ young people", "Partnerships with universities for youth access"],
+        sectors: ["HEALTH"]
+    },
+    {
+        id: 14,
+        name: "Hope for Tomorrow",
+        slug: "hope-for-tomorrow",
+        description: "Keeps rural girls in school through scholarships, menstrual health, and SRHR support.",
+        details: "Supports rural girls in Nyamasheke District to stay in school through scholarships, menstrual health support, and sexual reproductive health education. They create safe spaces where girls can learn and thrive.",
+        foundingYear: 2024,
+        keyPrograms: ["Girls' school scholarships", "Menstrual health support", "Safe spaces for adolescent girls"],
+        impactHighlights: ["20 girls returned to school on full scholarships", "300+ adolescents reached with SRHR education"],
+        sectors: ["EDUCATION"]
+    },
+    {
+        id: 15,
+        name: "Studio Shodwe",
+        slug: "studio-shodwe",
+        description: "Amplifies independent youth advocates through storytelling and social justice advocacy.",
+        details: "A platform that amplifies the voices of independent youth advocates. Through storytelling and advocacy, they highlight issues like mental health, orphanhood, and social justice, inspiring others to speak up and create change.",
+        keyPrograms: ["Youth storytelling campaigns", "Mental health and orphanhood advocacy", "Independent voice amplification"],
+        impactHighlights: ["Elevates youth advocates through narrative platforms", "Breaks social stigma via storytelling"],
+        sectors: ["ARTS & MEDIA"]
+    }
+];
+
+const organizationSectorOrder = ["HEALTH", "EDUCATION", "CHILD PROTECTION", "YOUTH EMPOWERMENT", "AGRICULTURE", "ARTS & MEDIA"];
+
+const impactRatingsData = [
+    {
+        rating: "PLATINUM",
+        organization: "Aspire Debate Rwanda",
+        evidence: "Partnerships with 50+ secondary schools and 22 higher learning institutions; pioneered national and East African university debating championships; established since 2014 with systemic reach across Rwanda's education sector."
+    },
+    {
+        rating: "PLATINUM",
+        organization: "Informed Future Generations (IFG)",
+        evidence: "Reached 5,000+ students through school clubs; collaborations with RBC and district governments; conducted 50+ outreaches; 40,000+ online views; founded in 2023 with remarkable rapid scaling."
+    },
+    {
+        rating: "PLATINUM",
+        organization: "Helping Heart Family Rwanda (HHFR)",
+        evidence: "Supported 500+ children in education; legal aid to 10,000+ individuals; successfully reintegrated 50 former street children with families; founded in 2021 with deep, measurable community impact."
+    },
+    {
+        rating: "GOLD",
+        organization: "OAZIS Health",
+        evidence: "Trained 850+ healthcare providers; engaged 500,000+ people in awareness campaigns; supported 720 digital health innovators; founded in 2020 with impressive scale in training and awareness."
+    },
+    {
+        rating: "GOLD",
+        organization: "Rwanda We Want Organization (RWW)",
+        evidence: "Empowered 100+ graduates through leadership program; addressed intergenerational trauma for 126 individuals; reached 2,000+ youth with SRH education; registered NGO since 2015 with strong sustainability."
+    },
+    {
+        rating: "GOLD",
+        organization: "Care and Help Child Organization",
+        evidence: "Expanded from supporting 35 to 574 vulnerable children; demonstrates powerful growth through partnerships; holistic approach to education, safety, and mental health with deep community roots since 2018."
+    },
+    {
+        rating: "GOLD",
+        organization: "MINDORA HEALTH",
+        evidence: "Reached 1,000+ young people with AI-driven mental health platform; strong partnerships with universities; innovative tech-forward approach positioned for massive scale; founded in 2022."
+    },
+    {
+        rating: "GOLD",
+        organization: "Heza Initiative",
+        evidence: "Strategic partnerships with UNICEF, RBC, and NCDA; provides daily nutrition to 200 children; multi-pronged approach to nutrition, agriculture, and teen mother empowerment; founded in 2022."
+    },
+    {
+        rating: "GOLD",
+        organization: "WHAT IF- Rwanda",
+        evidence: "Installed water tanks and filtration systems; consistent provision of school fees and materials; powerful mentorship program building \"families of the heart\" for children at Iramiro Center."
+    },
+    {
+        rating: "BRONZE",
+        organization: "Inshuti Health Organization (IHO)",
+        evidence: "Strong community-driven programs like 'HER CHOICE' and 'Learn to Unlearn'; deep personal roots in Nyagatare District suggesting significant localized impact; founded in 2020."
+    },
+    {
+        rating: "BRONZE",
+        organization: "Nursing Research Club Organization",
+        evidence: "Successfully hosted two annual nursing symposiums (2023, 2024); upcoming Rwamagana Health Connect (July 2025); focuses on professional development with growing community outreach; founded in 2021."
+    },
+    {
+        rating: "BRONZE",
+        organization: "Hope for Tomorrow",
+        evidence: "Returned 20 girls to school on full scholarships; reached 300+ adolescents with SRHR information; founded in 2024 with targeted, effective impact in Nyamasheke District."
+    },
+    {
+        rating: "BRONZE",
+        organization: "Rise and Live Organization",
+        evidence: "Powerful individual stories of transformation (e.g., 18-year-old teen mother now sending child to school); crucial mental and reproductive health support for teen mothers in Huye."
+    },
+    {
+        rating: "BRONZE",
+        organization: "University of Rwanda Public Health Students' Association (URPHSA)",
+        evidence: "Well-established student association since 2017; bridges academic knowledge with community action across NCDs, SRHR, and WASH; provides vital services through student-led initiatives."
+    },
+    {
+        rating: "BRONZE",
+        organization: "Studio Shodwe",
+        evidence: "Amplifies powerful independent youth voices (e.g., Vidha Kabera, Cynthia Umutoni); focuses on breaking stigmas around mental health and orphanhood through storytelling and advocacy."
     }
 ];
 
@@ -482,6 +689,7 @@ function initializeApp() {
     
     // Initialize sections
     initializeOrganizations();
+    renderImpactRatings();
     initializeCapacityBuilding();
     initializeOpportunities();
     initializeEvents();
@@ -793,23 +1001,50 @@ function animateCounter(element) {
 // ================================
 
 function initializeOrganizations() {
-    const grid = document.getElementById('organizationsGrid');
-    
-    organizationsData.forEach(org => {
-        const card = createOrganizationCard(org);
-        grid.appendChild(card);
+    const categoriesContainer = document.getElementById('organizationsGrid');
+    if (!categoriesContainer) {
+        return;
+    }
+
+    categoriesContainer.innerHTML = '';
+
+    organizationSectorOrder.forEach((sector) => {
+        const organizationsInSector = organizationsData.filter((org) => org.sectors && org.sectors.includes(sector));
+        if (!organizationsInSector.length) {
+            return;
+        }
+
+        const sectorBlock = document.createElement('article');
+        sectorBlock.className = 'organization-category';
+
+        const heading = document.createElement('h3');
+        heading.className = 'organization-category-title';
+        heading.textContent = sector;
+
+        const grid = document.createElement('div');
+        grid.className = 'organizations-grid';
+
+        organizationsInSector.forEach((org) => {
+            const card = createOrganizationCard(org);
+            grid.appendChild(card);
+        });
+
+        sectorBlock.appendChild(heading);
+        sectorBlock.appendChild(grid);
+        categoriesContainer.appendChild(sectorBlock);
     });
 
-    if (grid) {
-        grid.addEventListener('click', (event) => {
-            const link = event.target.closest('.org-link');
-            if (!link) {
+    if (categoriesContainer.dataset.eventsBound !== 'true') {
+        categoriesContainer.addEventListener('click', (event) => {
+            const button = event.target.closest('.org-learn-btn');
+            if (!button) {
                 return;
             }
+
             event.preventDefault();
-            const orgId = parseInt(link.dataset.orgId, 10);
-            openOrganizationModal(orgId);
+            openOrganizationModal(button.dataset.org);
         });
+        categoriesContainer.dataset.eventsBound = 'true';
     }
     
     // Add organization button (admin only)
@@ -834,40 +1069,49 @@ function createOrganizationCard(org) {
     const card = document.createElement('div');
     card.className = 'org-card reveal';
     card.innerHTML = `
-        <img src="${org.image}" alt="${org.name}" class="org-image">
         <div class="org-content">
             <h3 class="org-name">${org.name}</h3>
             <p class="org-description">${org.description}</p>
-            <a href="#" class="org-link" data-org-id="${org.id}">
+            <button type="button" class="org-link org-learn-btn" data-org="${org.slug}">
                 Learn More
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-            </a>
+            </button>
         </div>
     `;
     return card;
 }
 
-function openOrganizationModal(orgId) {
-    const org = organizationsData.find(item => item.id === orgId);
+function openOrganizationModal(orgSlug) {
+    const org = organizationsData.find(item => item.slug === orgSlug);
     if (!org) {
         return;
     }
 
     const title = document.getElementById('orgModalTitle');
     const body = document.getElementById('orgModalBody');
-    const image = document.getElementById('orgModalImage');
 
     if (title) {
         title.textContent = org.name;
     }
     if (body) {
-        body.innerHTML = org.details || org.description;
-    }
-    if (image) {
-        image.src = org.image;
-        image.alt = org.name;
+        const founding = org.foundingYear ? `<p class="org-modal-meta"><strong>Founding Year:</strong> ${org.foundingYear}</p>` : '';
+        const highlights = (org.impactHighlights || []).map((item) => `<li>${item}</li>`).join('');
+        const programs = (org.keyPrograms || []).map((item) => `<li>${item}</li>`).join('');
+
+        body.innerHTML = `
+            <p id="orgModalDescription">${org.details || org.description}</p>
+            ${founding}
+            <div class="org-modal-section">
+                <h4>Impact Highlights</h4>
+                <ul>${highlights || '<li>Impact evidence to be updated.</li>'}</ul>
+            </div>
+            <div class="org-modal-section">
+                <h4>Key Programs</h4>
+                <ul>${programs || '<li>Program details to be updated.</li>'}</ul>
+            </div>
+        `;
     }
 
     openModal('orgDetailsModal');
@@ -878,22 +1122,59 @@ function addOrganization() {
     const description = document.getElementById('orgDescription').value;
     const image = document.getElementById('orgImage').value;
     
+    const slug = name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     const newOrg = {
         id: organizationsData.length + 1,
         name,
+        slug: slug || `organization-${organizationsData.length + 1}`,
         description,
-        image
+        details: description,
+        keyPrograms: ["Program information coming soon"],
+        impactHighlights: ["Impact evidence coming soon"],
+        sectors: ["EDUCATION"]
     };
     
     organizationsData.push(newOrg);
     
-    const grid = document.getElementById('organizationsGrid');
-    const card = createOrganizationCard(newOrg);
-    grid.appendChild(card);
+    initializeOrganizations();
     
     closeModal('addOrgModal');
     document.getElementById('addOrgForm').reset();
     showNotification('Organization added successfully!');
+}
+
+function renderImpactRatings() {
+    const grid = document.getElementById('impactRatingGrid');
+    if (!grid) {
+        return;
+    }
+
+    grid.innerHTML = '';
+    impactRatingsData.forEach((item) => {
+        const card = document.createElement('article');
+        const ratingClass = getRatingClass(item.rating);
+        card.className = `impact-card ${ratingClass} reveal`;
+        card.innerHTML = `
+            <div class="impact-card-header">
+                <h3 class="impact-org-name">${item.organization}</h3>
+                <span class="rating-badge ${ratingClass}">${item.rating}</span>
+            </div>
+            <p class="impact-evidence">${item.evidence}</p>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function getRatingClass(rating) {
+    if (rating === 'PLATINUM') {
+        return 'rating-platinum';
+    }
+
+    if (rating === 'GOLD') {
+        return 'rating-gold';
+    }
+
+    return 'rating-bronze';
 }
 
 // ================================
@@ -1852,12 +2133,24 @@ function hideDashboard() {
 
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
+    if (!modal) {
+        return;
+    }
     modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    modal.focus();
 }
 
 function closeModal(modalId) {
     const modal = document.getElementById(modalId);
+    if (!modal) {
+        return;
+    }
     modal.classList.remove('active');
+
+    if (!document.querySelector('.modal.active')) {
+        document.body.style.overflow = '';
+    }
 }
 
 // Close modal when clicking close button
@@ -1868,7 +2161,10 @@ document.querySelectorAll('.modal-close').forEach(btn => {
             closeModal(modalId);
         } else {
             // For gallery modal
-            btn.closest('.modal').classList.remove('active');
+            const parentModal = btn.closest('.modal');
+            if (parentModal && parentModal.id) {
+                closeModal(parentModal.id);
+            }
         }
     });
 });
@@ -1877,7 +2173,7 @@ document.querySelectorAll('.modal-close').forEach(btn => {
 document.querySelectorAll('.modal').forEach(modal => {
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
-            modal.classList.remove('active');
+            closeModal(modal.id);
         }
     });
 });
@@ -1904,7 +2200,7 @@ document.addEventListener('keydown', (e) => {
     // ESC to close modals
     if (e.key === 'Escape') {
         document.querySelectorAll('.modal.active').forEach(modal => {
-            modal.classList.remove('active');
+            closeModal(modal.id);
         });
         
         // Close dropdowns
