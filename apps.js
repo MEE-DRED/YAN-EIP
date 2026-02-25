@@ -173,6 +173,35 @@ const organizationsData = [
 
 const organizationSectorOrder = ["HEALTH", "EDUCATION", "CHILD PROTECTION", "YOUTH EMPOWERMENT", "AGRICULTURE", "ARTS & MEDIA"];
 
+const defaultOrganizationImage = "images/yan-team-image%20.png";
+
+const organizationImageMap = {
+    "care-and-help-child-organization": [
+        "images/care-and-help-child-organization-image.png",
+        "images/care-and-help-child-crganization2.png"
+    ],
+    "what-if-rwanda": ["images/what-if-rwanda-image.png"],
+    "aspire-debate-rwanda": [
+        "images/aspire-debate-rwanda-image.png",
+        "images/aspire-debate-rwanda2..png"
+    ],
+    "informed-future-generations-ifg": [
+        "images/ifg-mage.png",
+        "images/ifg-image2.png"
+    ],
+    "oazis-health": ["images/oazis-health-image.png"],
+    "helping-heart-family-rwanda-hhfr": [defaultOrganizationImage],
+    "rwanda-we-want-organization-rww": [defaultOrganizationImage],
+    "heza-initiative": [defaultOrganizationImage],
+    "urphsa": [defaultOrganizationImage],
+    "rise-and-live-organization": [defaultOrganizationImage],
+    "nursing-research-club-organization": [defaultOrganizationImage],
+    "inshuti-health-organization-iho": [defaultOrganizationImage],
+    "mindora-health": [defaultOrganizationImage],
+    "hope-for-tomorrow": [defaultOrganizationImage],
+    "studio-shodwe": [defaultOrganizationImage]
+};
+
 const impactRatingsData = [
     {
         rating: "PLATINUM",
@@ -1032,6 +1061,8 @@ function initializeOrganizations() {
         sectorBlock.appendChild(heading);
         sectorBlock.appendChild(grid);
         categoriesContainer.appendChild(sectorBlock);
+
+        applyImageFallbacks(grid);
     });
 
     if (categoriesContainer.dataset.eventsBound !== 'true') {
@@ -1066,9 +1097,13 @@ function initializeOrganizations() {
 }
 
 function createOrganizationCard(org) {
+    const images = getOrganizationImages(org);
+    const primaryImage = images[0] || defaultOrganizationImage;
+
     const card = document.createElement('div');
     card.className = 'org-card reveal';
     card.innerHTML = `
+        <img src="${primaryImage}" alt="${org.name}" class="org-image" loading="lazy">
         <div class="org-content">
             <h3 class="org-name">${org.name}</h3>
             <p class="org-description">${org.description}</p>
@@ -1096,11 +1131,22 @@ function openOrganizationModal(orgSlug) {
         title.textContent = org.name;
     }
     if (body) {
+        const images = getOrganizationImages(org);
+        const imageMarkup = images.map((imagePath, index) => `
+            <img
+                src="${imagePath}"
+                alt="${org.name} image ${index + 1}"
+                class="org-modal-gallery-image"
+                loading="lazy"
+            >
+        `).join('');
+
         const founding = org.foundingYear ? `<p class="org-modal-meta"><strong>Founding Year:</strong> ${org.foundingYear}</p>` : '';
         const highlights = (org.impactHighlights || []).map((item) => `<li>${item}</li>`).join('');
         const programs = (org.keyPrograms || []).map((item) => `<li>${item}</li>`).join('');
 
         body.innerHTML = `
+            <div class="org-modal-gallery" aria-label="Organization images">${imageMarkup}</div>
             <p id="orgModalDescription">${org.details || org.description}</p>
             ${founding}
             <div class="org-modal-section">
@@ -1112,6 +1158,8 @@ function openOrganizationModal(orgSlug) {
                 <ul>${programs || '<li>Program details to be updated.</li>'}</ul>
             </div>
         `;
+
+        applyImageFallbacks(body);
     }
 
     openModal('orgDetailsModal');
@@ -1131,6 +1179,7 @@ function addOrganization() {
         details: description,
         keyPrograms: ["Program information coming soon"],
         impactHighlights: ["Impact evidence coming soon"],
+        images: image ? [image] : [defaultOrganizationImage],
         sectors: ["EDUCATION"]
     };
     
@@ -1141,6 +1190,31 @@ function addOrganization() {
     closeModal('addOrgModal');
     document.getElementById('addOrgForm').reset();
     showNotification('Organization added successfully!');
+}
+
+function getOrganizationImages(org) {
+    if (Array.isArray(org.images) && org.images.length) {
+        return org.images;
+    }
+
+    const mappedImages = organizationImageMap[org.slug];
+    if (Array.isArray(mappedImages) && mappedImages.length) {
+        return mappedImages;
+    }
+
+    return [defaultOrganizationImage];
+}
+
+function applyImageFallbacks(container) {
+    container.querySelectorAll('img').forEach((imageElement) => {
+        imageElement.addEventListener('error', () => {
+            if (imageElement.src.includes(defaultOrganizationImage)) {
+                return;
+            }
+
+            imageElement.src = defaultOrganizationImage;
+        }, { once: true });
+    });
 }
 
 function renderImpactRatings() {

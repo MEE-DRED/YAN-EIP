@@ -861,6 +861,15 @@ input, textarea, select {
     box-shadow: var(--shadow-2xl);
 }
 
+.org-image {
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+    border-top-left-radius: var(--radius-xl);
+    border-top-right-radius: var(--radius-xl);
+    background: var(--gradient-card);
+}
+
 .org-content {
     padding: var(--space-lg);
 }
@@ -2533,6 +2542,20 @@ input, textarea, select {
     font-size: 1rem;
 }
 
+.org-modal-gallery {
+    display: grid;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.org-modal-gallery-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
 .gallery-close {
     position: absolute;
     top: var(--space-lg);
@@ -2709,6 +2732,11 @@ input, textarea, select {
     
     .metrics-grid {
         grid-template-columns: 1fr;
+    }
+
+    .org-image,
+    .org-modal-gallery-image {
+        height: 190px;
     }
 }
 
