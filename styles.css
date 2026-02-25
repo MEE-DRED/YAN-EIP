@@ -2532,6 +2532,17 @@ input, textarea, select {
     .hamburger {
         display: flex;
     }
+
+    .nav-link {
+        color: var(--secondary);
+        width: 100%;
+        display: block;
+        padding: 12px 0;
+    }
+
+    .nav-link:hover, .nav-link.active{
+        color: var(--primary);
+    }
     
     .nav-actions {
         display: none;

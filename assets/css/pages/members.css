@@ -1,0 +1,182 @@
+/* Members Page design */
+
+.membersControls {
+  max-width: 600px;
+  margin: 2.5rem auto 3rem auto;
+  display: flex;
+  justify-content: center;
+}
+
+.membersControls input {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 50px;
+  border: 2px solid var(--border-color);
+  outline: none;
+  transition: var(--transition);
+  box-shadow: var(--shadow);
+}
+
+/* Placeholder style */
+.membersControls input::placeholder {
+    color: gray;
+}
+
+/* Hover */
+.membersControls input:hover {
+    border-color: var(--primary-color);
+}
+
+/* Focus effect */
+.membersControls input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(0, 188, 212, 0.15);
+}
+
+/* Search icon using pseudo element */
+.membersControls {
+    position: relative;
+}
+
+.membersControls::before {
+    position: absolute;
+    left: calc(50% - 280px);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    opacity: 0.1;
+}
+
+/* Space for icon inside input */
+.membersControls input {
+    padding-left: 2.8rem;
+}
+
+.containerMembersPage{
+  width: min(1100px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+/* Header */
+.membersHeader{
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.membersHeader h1{
+  margin: 0 0 10px;
+  font-size: 2rem;
+}
+
+.membersHeader p{
+  margin: 0 auto;
+  max-width: 920px;
+  line-height: 1.6;
+  opacity: 0.88;
+}
+
+/* List container */
+.members_List{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+/* Row */
+.memberRow{
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(159, 149, 194, 0.233);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.memberRow:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(153, 79, 79, 0.08);
+}
+
+/* Logo block (initials) */
+.memberLogo{
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 18px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(0,0,0,0.03);
+  flex: 0 0 auto;
+}
+
+/* Info */
+.memberInfo{
+  flex: 1;
+  min-width: 220px;
+}
+
+.memberInfo h3{
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+}
+
+.memberInfo p{
+  margin: 0 0 10px;
+  line-height: 1.45;
+  opacity: 0.85;
+}
+
+/* Meta */
+.memberMeta{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.memberTag{
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(151, 171, 196, 0.541);
+  opacity: 0.92;
+}
+
+/* Action */
+.memberAction{
+  white-space: nowrap;
+}
+
+/* Empty state */
+.emptyState{
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px dashed rgba(0,0,0,0.18);
+  background: rgba(0,0,0,0.03);
+  opacity: 0.85;
+}
+
+/* Responsive */
+@media (max-width: 860px){
+  .memberRow{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .memberAction{
+    width: 100%;
+  }
+
+  .memberAction a{
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+  }
+}

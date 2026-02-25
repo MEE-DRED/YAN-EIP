@@ -18,10 +18,10 @@
             </div>
             
             <div class="nav-menu" id="navMenu">
-                <a href="#home" class="nav-link active">Home</a>
+                <a href="/index.html" class="nav-link active">Home</a>
                 <a href="#about" class="nav-link">About</a>
-                <a href="#organizations" class="nav-link">Network</a>
-                <a href="#capacity" class="nav-link">Capacity Building</a>
+                <a href="/pages/members/members.html" class="nav-link">Network</a>
+                <a href="/pages/dashboard/memberDashboard.html" class="nav-link">Capacity Building</a>
                 <a href="#opportunities" class="nav-link" data-role="member,admin">Opportunities</a>
                 <a href="#events" class="nav-link">Events</a>
                 <a href="#gallery" class="nav-link">Gallery</a>
@@ -35,10 +35,12 @@
                     <button class="role-btn" data-role="admin">Admin</button>
                 </div>
                 
-                <button class="login-btn" id="loginBtn">
+                <a href="/pages/auth/login.html">
+                    <button class="login-btn" id="loginBtn">
                     <span class="login-text">Login</span>
                     <span class="login-icon">→</span>
                 </button>
+            </a>
                 
                 <div class="profile-dropdown" id="profileDropdown" style="display: none;">
                     <button class="profile-btn" id="profileBtn">
@@ -82,12 +84,15 @@
                 for advocacy, capacity building, and transformative leadership development
             </p>
             <div class="hero-cta">
-                <button class="btn btn-primary" id="heroJoinBtn">
+                <a href="/pages/auth/apply.html">
+                    <button class="btn btn-primary" id="heroJoinBtn">
                     <span>Join Our Network</span>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                         <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </button>
+            </a>
+                
                 <button class="btn btn-secondary" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">
                     <span>Learn More</span>
                 </button>
@@ -284,7 +289,7 @@
                     <h3>Members-Only Access</h3>
                     <p>Our comprehensive capacity building program includes structured training modules, assignments, and certifications. Login as a member to access the full learning management system.</p>
                     <button class="btn btn-primary" onclick="document.getElementById('loginBtn').click()">
-                        <span>Login to Access</span>
+                        <a href="/pages/auth/login.html"><span>Login to Access</span></a>
                     </button>
                 </div>
             </div>

@@ -1,0 +1,279 @@
+/* ===============================
+   MEMBER PROFILE PAGE
+   =============================== */
+
+.profilePage{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.profileHero{
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  margin-bottom: 18px;
+}
+
+.profileLogo{
+  width: 80px;
+  height: 80px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  background: linear-gradient(135deg, rgba(0,188,212,0.12), rgba(13,71,161,0.10));
+  flex: 0 0 auto;
+}
+
+.profileTitle h1{
+  margin: 0 0 6px;
+  color: var(--secondary-color);
+}
+
+.profileTitle .subtitle{
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.profileBadges{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.profileBadge{
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: var(--light-gray);
+  color: var(--text-primary);
+}
+
+/* Layout: two columns */
+.profileGrid{
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.profileCard{
+  background: var(--white);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+.profileCard h2{
+  margin-top: 0;
+  color: var(--secondary-color);
+}
+
+.profileCard p{
+  color: var(--text-secondary);
+}
+
+/* Projects list */
+.projectList{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.projectItem{
+  border-left: 4px solid var(--primary-color);
+  padding: 12px 14px;
+  background: var(--light-gray);
+  border-radius: 10px;
+}
+
+.projectItem h3{
+  margin: 0 0 6px;
+  color: var(--text-primary);
+  font-size: 1.05rem;
+}
+
+.projectItem p{
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.profileLinks{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.profileLinks a{
+  color: var(--secondary-color);
+  font-weight: 500;
+}
+
+.profileActions{
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.backRow{
+  margin-top: 18px;
+}
+
+.founderHero {
+  position: relative;
+  width: 100%;
+  height: 380px;              /* Big image */
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+  margin: 14px 0 18px;
+  background: #000;           /* fallback */
+}
+
+.founderHeroImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;         /* best for portrait/landscape mix */
+  display: block;
+  transform: scale(1.02);
+  transition: transform 0.6s ease;
+}
+
+.zoomOutPortrait{
+  transform: scale(0.88);
+  object-position: center 10%;
+}
+
+/* Overlay that slides up + fades in */
+.founderHeroOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 18px;
+
+  background: linear-gradient(
+    to top,
+    rgba(13, 71, 161, 0.88) 0%,
+    rgba(13, 71, 161, 0.35) 45%,
+    rgba(13, 71, 161, 0) 100%
+  );
+
+  transform: translateY(55%);
+  opacity: 0;
+  transition: transform 0.45s ease, opacity 0.45s ease;
+}
+
+.founderHeroText {
+  color: var(--white);
+  max-width: 90%;
+}
+
+.founderHeroLabel {
+  display: inline-block;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.95;
+  background: rgba(0, 188, 212, 0.22);
+  border: 1px solid rgba(0, 188, 212, 0.35);
+  padding: 6px 10px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+.founderHeroName {
+  margin: 0 0 6px;
+  font-size: 1.65rem;
+  line-height: 1.15;
+  color: #fff;
+}
+
+.founderHeroRole {
+  color: #fff;
+  margin: 0;
+  opacity: 0.92;
+  font-size: 0.95rem;
+}
+
+/* Desktop hover reveal */
+.founderHero:hover .founderHeroOverlay {
+  transform: translateY(0%);
+  opacity: 1;
+}
+
+.founderHero:hover .founderHeroImg {
+  transform: scale(1.09);
+}
+
+/* Mobile tap button */
+.founderHeroTap {
+  position:initial;
+  left: 14px;
+  bottom: 14px;
+  z-index: 2;
+
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(180, 28, 28, 0.35);
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.founderHeroTap:hover {
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff
+}
+
+/* Reveal state for mobile (JS toggles this) */
+.founderHero[data-reveal="true"] .founderHeroOverlay {
+  transform: translateY(0%);
+  opacity: 1;
+}
+
+.founderHero[data-reveal="true"] .founderHeroImg {
+  transform: scale(1.09);
+}
+
+/* Hide tap button on desktop */
+@media (min-width: 900px) {
+  .founderHeroTap { display: none; }
+}
+
+/* Smaller screens */
+@media (max-width: 600px) {
+  .founderHero { height: 320px; }
+  .founderHeroName { font-size: 1.35rem; }
+}
+
+@media (max-width: 900px){
+  .profileHero{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .profileGrid{
+    grid-template-columns: 1fr;
+  }
+}
