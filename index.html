@@ -313,9 +313,22 @@
             
             <!-- Member/Admin View - Module Dashboard -->
             <div class="capacity-member-view" id="capacityMemberView" style="display: none;">
+                <div class="capacity-controls" id="capacityControls">
+                    <label class="capacity-search-label" for="capacitySearchInput">Search training materials</label>
+                    <input
+                        type="search"
+                        id="capacitySearchInput"
+                        class="capacity-search-input"
+                        placeholder="Search module or document title"
+                        aria-describedby="capacitySearchHint"
+                    >
+                    <p class="capacity-search-hint" id="capacitySearchHint">Filter modules and PDF resources by keyword.</p>
+                </div>
                 <div class="modules-grid" id="modulesGrid">
                     <!-- Modules will be populated by JavaScript -->
                 </div>
+                <p class="capacity-empty-state" id="capacityEmptyState" style="display: none;">No modules match your search.</p>
+                <div id="capacityLiveRegion" class="sr-only" aria-live="polite"></div>
             </div>
         </div>
     </section>

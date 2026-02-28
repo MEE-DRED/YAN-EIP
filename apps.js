@@ -560,6 +560,42 @@ const modulesData = [
     }
 ];
 
+const CAPACITY_REPO_CONTEXT = {
+    owner: 'MEE-DRED',
+    repo: 'YAN-EIP',
+    branch: 'main'
+};
+
+const capacityAssetFolders = {
+    Q1: 'capacity.assets-q1',
+    Q2: 'capacity.assets-q2',
+    Q3: 'capacity.assets-q3',
+    Q4: 'capacity.assets-q4'
+};
+
+const capacityPdfFallback = {
+    Q1: [
+        'Assignment 1_Quarter 1.pdf',
+        'Case study 1_ Quarter 1(Sample).pdf'
+    ],
+    Q2: [
+        'Assignment 2_Sample Quarter 2.pdf',
+        'Case study 2_Quarter 2 sample.pdf',
+        'Project_Design_Management_Training( Quarter 2).pdf'
+    ],
+    Q3: [
+        'Assignment 3.pdf',
+        'Case study 3.pdf'
+    ],
+    Q4: [
+        'Assignment 4.pdf',
+        'Case study 4.pdf'
+    ]
+};
+
+let capacityDocumentsCache = {};
+let capacitySearchTerm = '';
+
 const opportunitiesData = [
     {
         id: 1,
@@ -1257,6 +1293,7 @@ function getRatingClass(rating) {
 
 function initializeCapacityBuilding() {
     updateCapacityBuildingView();
+    setupCapacitySearch();
     
     // Back to modules button
     const backBtn = document.getElementById('backToModules');
@@ -1271,6 +1308,9 @@ function initializeCapacityBuilding() {
 function updateCapacityBuildingView() {
     const publicView = document.getElementById('capacityPublicView');
     const memberView = document.getElementById('capacityMemberView');
+    if (!publicView || !memberView) {
+        return;
+    }
     
     if (currentRole === 'public') {
         publicView.style.display = 'block';
@@ -1284,50 +1324,299 @@ function updateCapacityBuildingView() {
 
 function renderModules() {
     const grid = document.getElementById('modulesGrid');
+    const emptyState = document.getElementById('capacityEmptyState');
+    if (!grid) {
+        return;
+    }
+
     grid.innerHTML = '';
-    
-    modulesData.forEach(module => {
+
+    const filteredModules = modulesData.filter(module => moduleMatchesSearch(module, capacitySearchTerm));
+
+    filteredModules.forEach(module => {
         const progress = getModuleProgress(module.id);
         const card = createModuleCard(module, progress);
         grid.appendChild(card);
     });
+
+    if (emptyState) {
+        emptyState.style.display = filteredModules.length ? 'none' : 'block';
+    }
+
+    preloadCapacityDocumentCounts();
 }
 
 function createModuleCard(module, progress) {
     const card = document.createElement('div');
-    card.className = 'module-card reveal';
+    card.className = 'module-card capacity-module-card reveal';
+    card.setAttribute('data-module-id', String(module.id));
     
     const statusClass = progress.status;
     const statusText = progress.status === 'not-started' ? 'Not Started' : 
                        progress.status === 'in-progress' ? 'In Progress' : 'Completed';
+    const folderName = capacityAssetFolders[module.quarter] || '';
+    const countText = getCachedModuleDocumentCount(module.quarter);
+    const progressDisplay = progress.progress || 0;
     
     card.innerHTML = `
-        <div class="module-header">
+        <div class="module-header capacity-module-header">
             <span class="module-quarter-badge">${module.quarter}</span>
             <span class="module-status ${statusClass}">${statusText}</span>
         </div>
         <h3 class="module-title">${module.title}</h3>
-        <p class="module-description">${module.description}</p>
-        <div class="module-progress-section">
+        <p class="module-description">${module.description || 'No module description available.'}</p>
+        <div class="capacity-module-meta">
+            <span class="capacity-doc-badge" aria-label="Document count">${countText}</span>
+            <span class="capacity-folder-label" aria-label="Source folder">${folderName}</span>
+        </div>
+        <div class="module-progress-section capacity-progress-placeholder" aria-hidden="false">
             <div class="progress-label">
-                <span>Progress</span>
-                <span>${progress.progress}%</span>
+                <span>Progress (Placeholder)</span>
+                <span>${progressDisplay}%</span>
             </div>
             <div class="progress-bar">
-                <div class="progress-fill" style="width: ${progress.progress}%"></div>
+                <div class="progress-fill" style="width: ${progressDisplay}%"></div>
             </div>
         </div>
-        <div class="module-footer">
-            <button class="enter-module-btn" onclick="openModule(${module.id})">
-                Enter Module
+        <div class="module-footer capacity-module-footer">
+            <button
+                class="enter-module-btn capacity-open-module-btn"
+                data-module-toggle="${module.id}"
+                aria-expanded="false"
+                aria-controls="moduleDocs-${module.id}"
+            >
+                Open Module
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>
         </div>
+        <div class="capacity-module-panel" id="moduleDocs-${module.id}" hidden>
+            <div class="capacity-module-panel-inner">
+                <p class="capacity-loading-text">Loading documents...</p>
+                <ul class="capacity-doc-list" aria-label="Module documents"></ul>
+            </div>
+        </div>
     `;
+
+    const toggleButton = card.querySelector('[data-module-toggle]');
+    const panel = card.querySelector('.capacity-module-panel');
+
+    if (toggleButton && panel) {
+        toggleButton.addEventListener('click', async () => {
+            await toggleModuleDocuments(module, toggleButton, panel);
+        });
+    }
     
     return card;
+}
+
+function setupCapacitySearch() {
+    const searchInput = document.getElementById('capacitySearchInput');
+    if (!searchInput || searchInput.dataset.bound === 'true') {
+        return;
+    }
+
+    searchInput.dataset.bound = 'true';
+    searchInput.addEventListener('input', (event) => {
+        capacitySearchTerm = event.target.value.trim().toLowerCase();
+        renderModules();
+    });
+}
+
+function moduleMatchesSearch(module, term) {
+    if (!term) {
+        return true;
+    }
+
+    const moduleText = `${module.title} ${module.description} ${module.quarter}`.toLowerCase();
+    if (moduleText.includes(term)) {
+        return true;
+    }
+
+    const docs = capacityDocumentsCache[module.quarter] || [];
+    return docs.some(doc => formatDocumentTitle(doc.name).toLowerCase().includes(term));
+}
+
+function getCachedModuleDocumentCount(quarter) {
+    const docs = capacityDocumentsCache[quarter];
+    if (!docs) {
+        return 'PDFs: ...';
+    }
+
+    return `PDFs: ${docs.length}`;
+}
+
+async function toggleModuleDocuments(module, button, panel) {
+    const expanded = button.getAttribute('aria-expanded') === 'true';
+
+    if (expanded) {
+        collapseModulePanel(button, panel);
+        return;
+    }
+
+    const allExpanded = document.querySelectorAll('.capacity-open-module-btn[aria-expanded="true"]');
+    allExpanded.forEach(openButton => {
+        const moduleId = openButton.getAttribute('data-module-toggle');
+        const openPanel = document.getElementById(`moduleDocs-${moduleId}`);
+        if (openPanel) {
+            collapseModulePanel(openButton, openPanel);
+        }
+    });
+
+    panel.hidden = false;
+    panel.classList.add('is-open');
+    button.setAttribute('aria-expanded', 'true');
+
+    await renderModuleDocuments(module, panel);
+}
+
+function collapseModulePanel(button, panel) {
+    panel.classList.remove('is-open');
+    button.setAttribute('aria-expanded', 'false');
+    setTimeout(() => {
+        if (button.getAttribute('aria-expanded') === 'false') {
+            panel.hidden = true;
+        }
+    }, 220);
+}
+
+async function renderModuleDocuments(module, panel) {
+    const loadingText = panel.querySelector('.capacity-loading-text');
+    const docList = panel.querySelector('.capacity-doc-list');
+    if (!docList || !loadingText) {
+        return;
+    }
+
+    loadingText.style.display = 'block';
+    docList.innerHTML = '';
+
+    const documents = await getModuleDocuments(module.quarter);
+    updateCapacityLiveRegion(`${module.title}: ${documents.length} documents loaded.`);
+
+    if (!documents.length) {
+        loadingText.textContent = 'No PDF documents available in this module yet.';
+        return;
+    }
+
+    loadingText.style.display = 'none';
+
+    const listFragment = document.createDocumentFragment();
+    documents.forEach(documentFile => {
+        listFragment.appendChild(createDocumentListItem(documentFile));
+    });
+
+    docList.appendChild(listFragment);
+}
+
+async function getModuleDocuments(quarter) {
+    if (capacityDocumentsCache[quarter]) {
+        return capacityDocumentsCache[quarter];
+    }
+
+    const folder = capacityAssetFolders[quarter];
+    if (!folder) {
+        capacityDocumentsCache[quarter] = [];
+        return [];
+    }
+
+    const apiDocs = await fetchQuarterDocumentsFromGitHub(folder);
+    if (apiDocs.length) {
+        capacityDocumentsCache[quarter] = apiDocs;
+    } else {
+        const fallbackDocs = (capacityPdfFallback[quarter] || []).map(fileName => ({
+            name: fileName,
+            relativePath: `./${folder}/${encodeURIComponent(fileName).replace(/%2F/g, '/')}`
+        }));
+        capacityDocumentsCache[quarter] = fallbackDocs;
+    }
+
+    refreshModuleDocBadges();
+    return capacityDocumentsCache[quarter];
+}
+
+async function fetchQuarterDocumentsFromGitHub(folder) {
+    const endpoint = `https://api.github.com/repos/${CAPACITY_REPO_CONTEXT.owner}/${CAPACITY_REPO_CONTEXT.repo}/contents/YAN-EIP/${folder}?ref=${CAPACITY_REPO_CONTEXT.branch}`;
+
+    try {
+        const response = await fetch(endpoint, {
+            headers: {
+                Accept: 'application/vnd.github+json'
+            }
+        });
+
+        if (!response.ok) {
+            return [];
+        }
+
+        const files = await response.json();
+        return files
+            .filter(file => file.type === 'file' && file.name.toLowerCase().endsWith('.pdf'))
+            .map(file => ({
+                name: file.name,
+                relativePath: `./${folder}/${encodeURIComponent(file.name).replace(/%2F/g, '/')}`
+            }));
+    } catch (error) {
+        console.warn(`Unable to load documents for ${folder}:`, error);
+        return [];
+    }
+}
+
+function createDocumentListItem(documentFile) {
+    const item = document.createElement('li');
+    item.className = 'capacity-doc-item';
+
+    const title = formatDocumentTitle(documentFile.name);
+    item.innerHTML = `
+        <div class="capacity-doc-info">
+            <h4>${title}</h4>
+            <p>${documentFile.name}</p>
+        </div>
+        <div class="capacity-doc-actions">
+            <a class="btn btn-outline capacity-doc-btn" href="${documentFile.relativePath}" target="_blank" rel="noopener noreferrer" aria-label="View ${title}">View</a>
+            <a class="btn btn-primary capacity-doc-btn" href="${documentFile.relativePath}" download aria-label="Download ${title}">Download</a>
+        </div>
+    `;
+
+    return item;
+}
+
+function formatDocumentTitle(fileName) {
+    const titleWithoutExtension = fileName.replace(/\.pdf$/i, '');
+    return titleWithoutExtension
+        .replace(/[._-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function refreshModuleDocBadges() {
+    modulesData.forEach(module => {
+        const moduleCard = document.querySelector(`[data-module-id="${module.id}"]`);
+        if (!moduleCard) {
+            return;
+        }
+
+        const badge = moduleCard.querySelector('.capacity-doc-badge');
+        if (badge) {
+            badge.textContent = getCachedModuleDocumentCount(module.quarter);
+        }
+    });
+}
+
+function updateCapacityLiveRegion(message) {
+    const liveRegion = document.getElementById('capacityLiveRegion');
+    if (liveRegion) {
+        liveRegion.textContent = message;
+    }
+}
+
+function preloadCapacityDocumentCounts() {
+    const uniqueQuarters = [...new Set(modulesData.map(module => module.quarter))];
+    uniqueQuarters.forEach(quarter => {
+        if (!capacityDocumentsCache[quarter]) {
+            getModuleDocuments(quarter);
+        }
+    });
 }
 
 // ================================
