@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YAN - Admin Dashboard</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/assets/css/pages/adminDashboard.css">
+</head>
+
+<body>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="admin-shell">
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="admin-brand">
+        <div class="logo-circle"></div>
+        <div>
+          <h1>ADMIN</h1>
+          <p>Control Panel</p>
+        </div>
+      </div>
+
+      <div class="chip" title="signed in role">
+        <span id="adminRoleChip">ADMIN</span>
+      </div>
+
+      <nav class="admin-nav">
+        <button class="active" data-view="applications">Applications</button>
+        <button data-view="courses">Courses</button>
+        <button data-view="assignments">Assignments</button>
+        <button data-view="opportunities">Opportunities</button>
+        <button data-view="events">Events</button>
+      </nav>
+
+      <div class="admin-sidebar-footer">
+        <button class="btn-sm btn-soft" id="goHomeBtn"> Back to Site</button>
+        <button class="btn-sm" id="logoutBtn">Logout</button>
+        <div class="muted small">&copy;
+          <span id="year"></span> YAN Rwanda
+        </div>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <div class="topbar-left">
+          <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+          <div class="admin-title">
+            <h2 id="pageTitle">Applications</h2>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="search">
+            <input id="globalSearch" type="search" placeholder="Search...">
+          </div>
+          <button class="ghost-btn" id="seedBtn" title="Add demo data">Seed Demo</button>
+          <button class="pill-btn" id="primaryActionBtn">+ New</button>
+        </div>
+      </div>
+
+      <!--Content-->
+      <div class="admin-content">
+
+        <!--Stats-->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-icon">📩</div>
+            <div class="stat-meta">
+              <div class="value" id="statPending">0</div>
+              <div class="label">Pending Applications</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-meta">
+              <div class="value" id="statAccepted">0</div>
+              <div class="label">Accepted</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-meta">
+              <div class="value" id="statCourses">0</div>
+              <div class="label">Courses</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-meta">
+              <div class="value" id="statOpps">0</div>
+              <div class="label">Opportunities</div>
+            </div>
+          </div>
+        </div>
+
+        <!--Applications-->
+        <section class="panel" id="view-applications">
+          <div class="panel-header">
+            <div>
+              <h3>Applications</h3>
+              <div class="hint"><b>mail to:</b></div>
+            </div>
+            <div class="actions">
+              <select class="btn-sm" id="appStatusFilter">
+                <option value="all">All</option>
+                <option value="pending" selected>Pending</option>
+                <option value="accepted">Accepted</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              <button class="btn-sm btn-soft" id="clearRejectedBtn">Clear Rejected</button>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Applicant</th>
+                    <th>Status</th>
+                    <th>Organization</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="applicationsTbody"></tbody>
+              </table>
+            </div>
+
+            <div class="muted" id="applicationsEmpty" style="display: none;">
+              No applications found. (Use <b>Seed Demo</b> to create sample applications.)
+            </div>
+          </div>
+        </section>
+
+        <!--Courses-->
+        <section class="panel" id="view-courses" style="display: none;">
+          <div class="panel-header">
+            <div>
+              <h3>Courses</h3>
+              <div class="hint">Add - Edit - Delete courses</div>
+            </div>
+          </div>
+
+          <div class="panel-body grid-2">
+            <div class="form-card">
+              <h4 class="form-title">Create Course</h4>
+              <div class="form-row">
+                <input type="hidden" id="courseId"/>
+                <div class="field">
+                  <label>Course Title</label>
+                  <input id="courseTitle" type="text" placeholder="e.g., Leadership Fundamentals">
+                </div>
+                <div class="field">
+                  <label>Quarter</label>
+                  <select id="courseQuarter">
+                    <option value="Q1">Q1</option>
+                    <option value="Q2">Q2</option>
+                    <option value="Q3">Q3</option>
+                    <option value="Q4">Q4</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Description</label>
+                  <textarea id="courseDesc" placeholder="Short course description..."></textarea>
+                </div>
+                <div class="actions">
+                  <button class="btn-sm btn-primary-sm" id="saveCourseBtn">Save Course</button>
+                  <button class="btn-sm" id="resetCourseBtn">Reset</button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="table-wrap">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Quarter</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="coursesTbody"></tbody>
+                </table>
+              </div>
+              <div class="muted" id="coursesEmpty" style="display: none;">
+                No Courses Yet. Add One!
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!--Assignments-->
+        <section class="panel" id="view-assignments" style="display: none;">
+          <div class="panel-header">
+            <div>
+              <h3>Assignments</h3>
+              <div class="hint">Assignments for courses</div>
+            </div>
+          </div>
+          <div class="panel-body grid-2">
+            <div class="form-card">
+              <h4 class="form-title">New Assignment</h4>
+              <div class="form-row">
+                <input type="hidden" id="assignmentId"/>
+                <div class="field">
+                  <label>Course</label>
+                  <select id="assignmentCourse"></select>
+                </div>
+                <div class="field">
+                  <label>Title</label>
+                  <input id="assignmentTitle" type="text" placeholder="e.g., Assignment name..."/>
+                </div>
+                <div class="field">
+                  <label>Due Date</label>
+                  <input id="assignmentDue" type="date"/>
+                </div>
+                <div class="field">
+                  <label>Instructions</label>
+                  <textarea id="assignmentDesc" placeholder="Assignment Instructions..."></textarea>
+                </div>
+                <div class="actions">
+                  <button class="btn-sm btn-primary-sm" id="saveAssignmentBtn">Save</button>
+                  <button class="btn-sm" id="resetAssignmentBtn">Reset</button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="table-wrap">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Assignment</th>
+                      <th>Course</th>
+                      <th>Due</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="assignmentsTbody"></tbody>
+                </table>
+              </div>
+              <div class="muted" id="assignmentsEmpty" style="display: none;">
+                No assignments created yet!
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!--Opportunities-->
+        <section class="panel" id="view-opportunities" style="display: none;">
+          <div class="panel-header">
+            <div>
+              <h3>Opportunities</h3>
+              <div class="hint">Funding, Training, Partnership opportunities</div>
+            </div>
+          </div>
+          <div class="panel-body grid-2">
+            <div class="form-card">
+              <h4 class="form-title">New Opportunity</h4>
+              <div class="form-row">
+                <input type="hidden" id="oppId"/>
+                <div class="field">
+                  <label>Type</label>
+                  <select id="oppType">
+                    <option value="funding">Funding</option>
+                    <option value="training">Training</option>
+                    <option value="partnership">Partnership</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label>Title</label>
+                  <input id="oppTitle" type="text" placeholder="e.g., Grant Writing Workshop"/>
+                </div>
+                <div class="field">
+                  <label>Link (optional)</label>
+                  <input id="oppLink" type="url" placeholder="https://..."/>
+                </div>
+                <div class="field">
+                  <label>Description</label>
+                  <textarea id="oppDesc" placeholder="Opportunity details..."></textarea>
+                </div>
+                <div class="actions">
+                  <button class="btn-sm btn-primary-sm" id="saveOppBtn">Save</button>
+                  <button class="btn-sm" id="resetOppBtn">Reset</button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="table-wrap">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Type</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="oppsTbody"></tbody>
+                </table>
+              </div>
+              <div class="muted" id="oppsEmpty" style="display: none;">
+                No opportunities yet!
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!--Events-->
+        <section class="panel" id="view-events" style="display: none;">
+          <div class="panel-header">
+            <div>
+              <h3>Events</h3>
+              <div class="hint">Add Upcoming events</div>
+            </div>
+          </div>
+          <div class="panel-body grid-2">
+            <div class="form-card">
+              <h4 class="form-title">New Event</h4>
+              <div class="form-row">
+                <input type="hidden" id="eventId"/>
+                <div class="field">
+                  <label>Title</label>
+                  <input id="eventTitle" type="text" placeholder="Event Name..."/>
+                </div>
+                <div class="field">
+                  <label>Date</label>
+                  <input id="eventDate" type="date"/>
+                </div>
+                <div class="field">
+                  <label>Location</label>
+                  <input id="eventLocation" type="text" placeholder="Kigali, Rwanda"/>
+                </div>
+                <div class="field">
+                  <label>Description</label>
+                  <textarea id="eventDesc" placeholder="Event details..."></textarea>
+                </div>
+                <div class="actions">
+                  <button class="btn-sm btn-primary-sm" id="saveEventBtn">Save</button>
+                  <button class="btn-sm" id="resetEventBtn">Reset</button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="table-wrap">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Event</th>
+                      <th>Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="eventsTbody"></tbody>
+                </table>
+              </div>
+              <div class="muted" id="eventsEmpty" style="display:none;">
+                No events yet! Add one.
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!--Reject Modal-->
+  <div class="modalx" id="rejectModal">
+    <div class="modalx-card">
+      <div class="modalx-head">
+        <h4>Reject Application</h4>
+        <button class="modalx-close" id="rejectCloseBtn" aria-label="Close">&times;</button>
+      </div>
+      <div class="modalx-body">
+        <div class="muted" style="margin-bottom: 10px;">
+          Open email to draft message.
+        </div>
+        <input type="hidden" id="rejectAppId"/>
+        <div class="field">
+          <label>Message</label>
+          <textarea id="rejectMessage" placeholder="Write a message with reason of rejection of the applicant..."></textarea>
+        </div>
+        <div class="actions">
+          <button class="btn-sm btn-danger-sm" id="confirmRejectBtn">Reject</button>
+          <button class="btn-sm" id="cancelRejectBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modalx" id="viewApplicationModal">
+  <div class="modalx-card large">
+    <div class="modalx-head">
+      <h4>Application Details</h4>
+      <button class="modalx-close" id="viewCloseBtn">&times;</button>
+    </div>
+
+    <div class="modalx-body" id="applicationDetailsBody">
+      <!-- dynamic content goes here -->
+    </div>
+
+    <div class="modalx-footer">
+      <button class="btn-sm btn-primary-sm" id="modalAcceptBtn">Accept</button>
+      <button class="btn-sm btn-danger-sm" id="modalRejectBtn">Reject</button>
+    </div>
+  </div>
+</div>
+
+  <script src="/assets/JS/adminDashboard.js"></script>
+</body>
+</html>

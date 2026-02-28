@@ -2,6 +2,7 @@
 // Frontend-only login simulation (no backend yet).
 // Later, you'll replace mockAuth() with a real fetch() call to your API.
 
+
 const loginForm = document.getElementById("loginForm");
 const identifierEl = document.getElementById("identifier");
 const passwordEl = document.getElementById("password");
@@ -10,7 +11,8 @@ const loginBtn = document.getElementById("loginBtn");
 const alertEl = document.getElementById("alert");
 const togglePasswordBtn = document.getElementById("togglePassword");
 
-document.getElementById("year").textContent = new Date().getFullYear();
+const yearEl = document.getElementById("year");
+if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 function showAlert(message, type = "danger") {
   alertEl.textContent = message;
@@ -85,9 +87,9 @@ function saveSession(data, remember) {
 }
 
 function getDashboardPathByRole(role) {
-  // Adjust these paths to match your project structure
-  if (role === "admin") return "adminDashboard.html";
-  return "memberDashboard.html";
+  if (role === "admin") {
+    return "/pages/dashboard/adminDashboard.html";
+  }
 }
 
 loginForm.addEventListener("submit", async (e) => {
