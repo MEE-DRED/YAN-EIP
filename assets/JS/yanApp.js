@@ -1,15 +1,14 @@
 // yanApplicationForm.js
-// Frontend-only behavior:
-// - Basic required field checks
-// - Youth age range check (20–35)
-// - Save Draft to localStorage
-// - "Submit" shows success message and stores payload locally
-// NOTE: Later you will replace submit handler with fetch() to backend.
+// Sends submitted application to Admin Dashboard (localStorage based)
 
 const form = document.getElementById("yanApplicationForm");
 const alertBox = document.getElementById("formAlert");
 const saveDraftBtn = document.getElementById("saveDraftBtn");
 const submitBtn = document.getElementById("submitBtn");
+
+const LS_KEYS = {
+  APPS: "yan_applications"
+};
 
 function showAlert(message, type = "success") {
   alertBox.textContent = message;
@@ -35,80 +34,6 @@ function getAgeFromDob(dobStr) {
   return age;
 }
 
-function serializeFormToJson(formEl) {
-  const data = {};
-  const fd = new FormData(formEl);
-
-  // Multi-select values:
-  data.geoFocus = fd.get("geoFocus") ||"";
-
-  // Text values:
-  for (const [key, value] of fd.entries()) {
-    if (key === "geoFocus") continue;
-
-    // Files: keep just file names for draft preview
-    if (value instanceof File) {
-      if (!data[key]) data[key] = [];
-      if (value && value.name) data[key].push(value.name);
-      continue;
-    }
-
-    // Checkboxes:
-    if (key === "confirmParticipation" || key === "declaration") {
-      data[key] = true;
-      continue;
-    }
-
-    data[key] = value;
-  }
-
-  // Ensure unchecked checkboxes appear as false
-  if (!fd.get("confirmParticipation")) data.confirmParticipation = false;
-  if (!fd.get("declaration")) data.declaration = false;
-
-  return data;
-}
-
-function loadDraft() {
-  const raw = localStorage.getItem("yan_application_draft");
-  if (!raw) return;
-  try {
-    const data = JSON.parse(raw);
-
-    // Fill simple fields
-    Object.keys(data).forEach((key) => {
-      const el = form.elements[key];
-      if (!el) return;
-
-      // geoFocus is handled below
-      if (key === "geoFocus") return;
-
-      // Checkboxes
-      if (el.type === "checkbox") {
-        el.checked = Boolean(data[key]);
-        return;
-      }
-
-      // Inputs/textareas/selects (ignore file inputs)
-      if (el.type !== "file") {
-        el.value = data[key] ?? "";
-      }
-    });
-
-    // Multi-select: geoFocus
-    const geoEl = form.elements["geoFocus"];
-    if (geoEl && geoEl.options && Array.isArray(data.geoFocus)) {
-      for (const opt of geoEl.options) {
-        opt.selected = data.geoFocus.includes(opt.value);
-      }
-    }
-
-    showAlert("Draft loaded from this browser.", "success");
-  } catch {
-    // ignore
-  }
-}
-
 function validateYouthAgeRange() {
   const dobEl = form.elements["repDob"];
   const age = getAgeFromDob(dobEl.value);
@@ -120,28 +45,68 @@ function validateYouthAgeRange() {
 }
 
 function validateRequired() {
-  // Use built-in browser validation first
   if (!form.checkValidity()) {
-    // Trigger built-in UI
     form.reportValidity();
     return { ok: false, message: "Please fill all required fields." };
   }
 
-  // Custom: Age range
   const ageCheck = validateYouthAgeRange();
   if (!ageCheck.ok) return ageCheck;
 
   return { ok: true };
 }
 
-saveDraftBtn.addEventListener("click", () => {
+function readFileAsDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function serializeFormWithFiles(formEl) {
+  const fd = new FormData(formEl);
+  const data = {};
+  const files = {};
+
+  for (const [key, value] of fd.entries()) {
+
+    // FILES
+    if (value instanceof File && value.size > 0) {
+      if (!files[key]) files[key] = [];
+      const base64 = await readFileAsDataURL(value);
+      files[key].push({
+        name: value.name,
+        type: value.type,
+        dataUrl: base64
+      });
+      continue;
+    }
+
+    // CHECKBOXES
+    if (key === "confirmParticipation" || key === "declaration") {
+      data[key] = true;
+      continue;
+    }
+
+    data[key] = value;
+  }
+
+  if (!fd.get("confirmParticipation")) data.confirmParticipation = false;
+  if (!fd.get("declaration")) data.declaration = false;
+
+  return { data, files };
+}
+
+saveDraftBtn.addEventListener("click", async () => {
   clearAlert();
-  const data = serializeFormToJson(form);
+  const { data } = await serializeFormWithFiles(form);
   localStorage.setItem("yan_application_draft", JSON.stringify(data));
   showAlert("Draft saved on this browser.", "success");
 });
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
   clearAlert();
 
@@ -154,19 +119,26 @@ form.addEventListener("submit", (e) => {
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting...";
 
-  // Frontend-only "submit"
-  const payload = serializeFormToJson(form);
-  payload.status = "Submitted";
-  payload.submittedAt = new Date().toISOString();
+  const { data, files } = await serializeFormWithFiles(form);
 
-  localStorage.setItem("yan_application_last_submit", JSON.stringify(payload));
+  const application = {
+    id: "app_" + Date.now(),
+    fullName: data.repFullName,
+    email: data.repEmail,
+    organization: data.orgLegalName,
+    status: "pending",
+    createdAt: new Date().toISOString(),
+    data: data,
+    files: files
+  };
+
+  const existing = JSON.parse(localStorage.getItem(LS_KEYS.APPS)) || [];
+  existing.push(application);
+  localStorage.setItem(LS_KEYS.APPS, JSON.stringify(existing));
+
   localStorage.removeItem("yan_application_draft");
 
-  setTimeout(() => {
-    showAlert("Application submitted successfully. Status: Submitted (frontend only).", "success");
-    submitBtn.textContent = "Submitted";
-  }, 500);
-});
+  showAlert("Application submitted successfully. It is now under review.", "success");
 
-// Auto-load draft on page open
-loadDraft();
+  submitBtn.textContent = "Submitted";
+});
