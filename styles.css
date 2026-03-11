@@ -529,6 +529,38 @@ input, textarea, select {
     flex-wrap: wrap;
 }
 
+.hero-video-section {
+    margin-top: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.hero-video-title {
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 2vw, 1.35rem);
+    font-weight: 600;
+    color: white;
+    text-align: center;
+    max-width: 760px;
+}
+
+.hero-video-wrapper {
+    width: min(100%, 760px);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-2xl);
+}
+
+.hero-video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
 .btn {
     display: inline-flex;
     align-items: center;
@@ -628,6 +660,36 @@ input, textarea, select {
     margin-bottom: var(--space-xl);
 }
 
+.mandate-preview {
+    margin-bottom: 0;
+}
+
+.mandate-details {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height var(--transition-slow), opacity var(--transition-base);
+}
+
+.mandate-details.is-open {
+    opacity: 1;
+}
+
+.read-more-toggle {
+    width: fit-content;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--primary);
+    border-radius: var(--radius-md);
+    color: var(--primary);
+    font-weight: 600;
+    transition: all var(--transition-fast);
+}
+
+.read-more-toggle:hover {
+    background: var(--primary);
+    color: white;
+}
+
 .about-text p {
     font-size: 1.125rem;
     line-height: 1.8;
@@ -657,7 +719,44 @@ input, textarea, select {
 
 .vision-mission {
     display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-md);
+}
+
+.vm-item {
+    padding: var(--space-md);
+    border: 1px solid rgba(6, 182, 212, 0.15);
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+}
+
+.about-network-section {
+    margin-top: var(--space-sm);
+}
+
+.about-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-md);
+}
+
+.about-card {
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(6, 182, 212, 0.12);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+}
+
+.about-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.about-card .about-list {
+    margin-top: var(--space-xs);
 }
 
 .pillars-grid {
@@ -2804,6 +2903,11 @@ input, textarea, select {
         grid-template-columns: 1fr;
         gap: var(--space-xl);
     }
+
+    .vision-mission,
+    .about-cards-grid {
+        grid-template-columns: 1fr;
+    }
     
     .contact-grid {
         grid-template-columns: 1fr;
@@ -2896,6 +3000,14 @@ input, textarea, select {
     
     .hero-cta {
         flex-direction: column;
+    }
+
+    .hero-video-section {
+        margin-top: var(--space-lg);
+    }
+
+    .hero-video-wrapper {
+        width: 100%;
     }
     
     .footer-grid {

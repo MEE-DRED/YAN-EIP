@@ -760,6 +760,7 @@ function initializeApp() {
     initializeEvents();
     initializeGallery();
     initializeContact();
+    initializeMandateToggle();
     
     // Initialize scroll effects
     initializeScrollEffects();
@@ -771,6 +772,36 @@ function initializeApp() {
     if (currentUser) {
         initializeDashboard();
     }
+}
+
+function initializeMandateToggle() {
+    const mandateToggle = document.getElementById('mandateToggle');
+    const mandateDetails = document.getElementById('mandateDetails');
+
+    if (!mandateToggle || !mandateDetails) {
+        return;
+    }
+
+    const updateMandateState = (isExpanded) => {
+        mandateToggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+        mandateDetails.setAttribute('aria-hidden', isExpanded ? 'false' : 'true');
+        mandateToggle.textContent = isExpanded ? 'Show Less' : 'Read More';
+        mandateDetails.classList.toggle('is-open', isExpanded);
+        mandateDetails.style.maxHeight = isExpanded ? `${mandateDetails.scrollHeight}px` : '0px';
+    };
+
+    updateMandateState(false);
+
+    mandateToggle.addEventListener('click', () => {
+        const isExpanded = mandateToggle.getAttribute('aria-expanded') === 'true';
+        updateMandateState(!isExpanded);
+    });
+
+    window.addEventListener('resize', () => {
+        if (mandateToggle.getAttribute('aria-expanded') === 'true') {
+            mandateDetails.style.maxHeight = `${mandateDetails.scrollHeight}px`;
+        }
+    });
 }
 
 // ================================
