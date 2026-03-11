@@ -410,7 +410,7 @@ input, textarea, select {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow: visible;
     padding: var(--space-3xl) var(--space-lg);
 }
 
@@ -418,6 +418,7 @@ input, textarea, select {
     position: absolute;
     inset: 0;
     z-index: 0;
+    overflow: hidden;
 }
 
 .hero-gradient {
