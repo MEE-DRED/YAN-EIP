@@ -747,6 +747,10 @@ input, textarea, select {
     border: 1px solid rgba(6, 182, 212, 0.12);
     background: var(--bg-card);
     box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    min-height: 100%;
 }
 
 .about-card h4 {
@@ -754,6 +758,26 @@ input, textarea, select {
     font-weight: 700;
     color: var(--secondary);
     margin-bottom: var(--space-xs);
+}
+
+.about-card-preview {
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.about-card-details {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height var(--transition-slow), opacity var(--transition-base);
+}
+
+.about-card-details.is-open {
+    opacity: 1;
+}
+
+.about-card-toggle {
+    margin-top: auto;
 }
 
 .about-card .about-list {

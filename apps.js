@@ -761,6 +761,7 @@ function initializeApp() {
     initializeGallery();
     initializeContact();
     initializeMandateToggle();
+    initializeAboutCardsToggle();
     
     // Initialize scroll effects
     initializeScrollEffects();
@@ -802,6 +803,55 @@ function initializeMandateToggle() {
             mandateDetails.style.maxHeight = `${mandateDetails.scrollHeight}px`;
         }
     });
+}
+
+function initializeAboutCardsToggle() {
+    const aboutCardToggles = document.querySelectorAll('.about-card-toggle');
+
+    if (!aboutCardToggles.length) {
+        return;
+    }
+
+    const updateOpenCardHeights = () => {
+        aboutCardToggles.forEach((toggle) => {
+            if (toggle.getAttribute('aria-expanded') !== 'true') {
+                return;
+            }
+
+            const targetId = toggle.getAttribute('aria-controls');
+            const details = targetId ? document.getElementById(targetId) : null;
+
+            if (details) {
+                details.style.maxHeight = `${details.scrollHeight}px`;
+            }
+        });
+    };
+
+    aboutCardToggles.forEach((toggle) => {
+        const targetId = toggle.getAttribute('aria-controls');
+        const details = targetId ? document.getElementById(targetId) : null;
+
+        if (!details) {
+            return;
+        }
+
+        const updateCardState = (isExpanded) => {
+            toggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+            details.setAttribute('aria-hidden', isExpanded ? 'false' : 'true');
+            toggle.textContent = isExpanded ? 'Show Less' : 'Read More';
+            details.classList.toggle('is-open', isExpanded);
+            details.style.maxHeight = isExpanded ? `${details.scrollHeight}px` : '0px';
+        };
+
+        updateCardState(false);
+
+        toggle.addEventListener('click', () => {
+            const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+            updateCardState(!isExpanded);
+        });
+    });
+
+    window.addEventListener('resize', updateOpenCardHeights);
 }
 
 // ================================
