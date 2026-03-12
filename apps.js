@@ -573,6 +573,33 @@ const capacityAssetFolders = {
     Q4: 'capacity.assets-q4'
 };
 
+const capacityQ1StructuredDocuments = [
+    {
+        section: 'Leadership',
+        items: [
+            { name: 'Follow-up resources_ Leadership_Youth_NGOs.pdf', materialType: 'Advocacy guides' },
+            { name: 'Leadership Youth Session guide ( Final).pdf', materialType: 'Training manuals' },
+            { name: 'Leadership_Youth_NGOs_v2 updated (1).pptx', materialType: 'Workshop presentations' }
+        ]
+    },
+    {
+        section: 'Resilience',
+        items: [
+            { name: 'Follow-up resources_ Resilience.pdf', materialType: 'Capacity-building resources' },
+            { name: 'Resilience Session Guide.pdf', materialType: 'Policy toolkits' },
+            { name: 'Resilience_Adaptive_Mindset_Edited.pptx', materialType: 'Workshop presentations' }
+        ]
+    },
+    {
+        section: 'Soft Skills',
+        items: [
+            { name: 'Follow-up resources_ Soft skills.pdf', materialType: 'Capacity-building resources' },
+            { name: 'Session guide 3 (1).pdf', materialType: 'Training manuals' },
+            { name: 'Soft_Skills_Self_Management_Edited.pptx (1)', materialType: 'Workshop presentations' }
+        ]
+    }
+];
+
 const capacityPdfFallback = {
     Q1: [
         'Assignment 1_Quarter 1.pdf',
@@ -1553,10 +1580,38 @@ function moduleMatchesSearch(module, term) {
 function getCachedModuleDocumentCount(quarter) {
     const docs = capacityDocumentsCache[quarter];
     if (!docs) {
-        return 'PDFs: ...';
+        return 'Documents: ...';
     }
 
-    return `PDFs: ${docs.length}`;
+    return `Documents: ${docs.length}`;
+}
+
+function buildQuarterDocumentPath(quarter, fileName) {
+    const folder = capacityAssetFolders[quarter];
+    if (!folder) {
+        return '#';
+    }
+
+    return `./${folder}/${encodeURIComponent(fileName).replace(/%2F/g, '/')}`;
+}
+
+function getStructuredQ1Documents() {
+    const docs = [];
+
+    capacityQ1StructuredDocuments.forEach((group, groupIndex) => {
+        group.items.forEach((item, itemIndex) => {
+            docs.push({
+                section: group.section,
+                materialType: item.materialType,
+                name: item.name,
+                relativePath: buildQuarterDocumentPath('Q1', item.name),
+                groupOrder: groupIndex,
+                itemOrder: itemIndex
+            });
+        });
+    });
+
+    return docs;
 }
 
 async function toggleModuleDocuments(module, button, panel) {
@@ -1607,22 +1662,58 @@ async function renderModuleDocuments(module, panel) {
     updateCapacityLiveRegion(`${module.title}: ${documents.length} documents loaded.`);
 
     if (!documents.length) {
-        loadingText.textContent = 'No PDF documents available in this module yet.';
+        loadingText.textContent = 'No documents available in this module yet.';
         return;
     }
 
     loadingText.style.display = 'none';
 
     const listFragment = document.createDocumentFragment();
-    documents.forEach(documentFile => {
-        listFragment.appendChild(createDocumentListItem(documentFile));
-    });
+
+    if (module.quarter === 'Q1') {
+        const grouped = documents.reduce((acc, documentFile) => {
+            const key = documentFile.section || 'Q1 Documents';
+            if (!acc[key]) {
+                acc[key] = [];
+            }
+            acc[key].push(documentFile);
+            return acc;
+        }, {});
+
+        Object.keys(grouped).forEach(sectionTitle => {
+            const heading = document.createElement('li');
+            heading.className = 'capacity-doc-item';
+            heading.innerHTML = `
+                <div class="capacity-doc-info">
+                    <h4>${sectionTitle}</h4>
+                    <p>Q1 Capacity Building Documents</p>
+                </div>
+            `;
+            listFragment.appendChild(heading);
+
+            grouped[sectionTitle]
+                .sort((a, b) => (a.itemOrder || 0) - (b.itemOrder || 0))
+                .forEach(documentFile => {
+                    listFragment.appendChild(createDocumentListItem(documentFile));
+                });
+        });
+    } else {
+        documents.forEach(documentFile => {
+            listFragment.appendChild(createDocumentListItem(documentFile));
+        });
+    }
 
     docList.appendChild(listFragment);
 }
 
 async function getModuleDocuments(quarter) {
     if (capacityDocumentsCache[quarter]) {
+        return capacityDocumentsCache[quarter];
+    }
+
+    if (quarter === 'Q1') {
+        capacityDocumentsCache[quarter] = getStructuredQ1Documents();
+        refreshModuleDocBadges();
         return capacityDocumentsCache[quarter];
     }
 
@@ -1679,14 +1770,15 @@ function createDocumentListItem(documentFile) {
     item.className = 'capacity-doc-item';
 
     const title = formatDocumentTitle(documentFile.name);
+    const materialType = documentFile.materialType ? `${documentFile.materialType}` : 'Capacity-building resources';
     item.innerHTML = `
         <div class="capacity-doc-info">
             <h4>${title}</h4>
-            <p>${documentFile.name}</p>
+            <p>${materialType}</p>
         </div>
         <div class="capacity-doc-actions">
-            <a class="btn btn-outline capacity-doc-btn" href="${documentFile.relativePath}" target="_blank" rel="noopener noreferrer" aria-label="View ${title}">View</a>
-            <a class="btn btn-primary capacity-doc-btn" href="${documentFile.relativePath}" download aria-label="Download ${title}">Download</a>
+            <a class="btn btn-outline capacity-doc-btn" href="${documentFile.relativePath}" target="_blank" rel="noopener noreferrer" aria-label="View ${title}">View Document</a>
+            <a class="btn btn-primary capacity-doc-btn" href="${documentFile.relativePath}" download aria-label="Download ${title}">Download Document</a>
         </div>
     `;
 
