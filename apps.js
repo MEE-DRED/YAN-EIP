@@ -949,6 +949,37 @@ function initializeNavigation() {
             hideDashboard();
         });
     }
+
+    const memberDashboardLogoutBtn = document.getElementById('memberDashboardLogout');
+    if (memberDashboardLogoutBtn) {
+        memberDashboardLogoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+    }
+
+    const menuBtn = document.getElementById('menuBtn');
+    const adminSidebar = document.getElementById('adminSidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    if (menuBtn && adminSidebar && sidebarOverlay) {
+        menuBtn.addEventListener('click', () => {
+            const isOpen = adminSidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('active', isOpen);
+        });
+
+        sidebarOverlay.addEventListener('click', () => {
+            closeDashboardSidebar();
+        });
+
+        document.querySelectorAll('.admin-nav button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (window.innerWidth <= 860) {
+                    closeDashboardSidebar();
+                }
+            });
+        });
+    }
     
     // Scroll to top button
     const scrollTopBtn = document.getElementById('scrollTop');
@@ -2533,6 +2564,19 @@ function updateDashboardMetrics() {
     }
 }
 
+function closeDashboardSidebar() {
+    const adminSidebar = document.getElementById('adminSidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    if (adminSidebar) {
+        adminSidebar.classList.remove('open');
+    }
+
+    if (sidebarOverlay) {
+        sidebarOverlay.classList.remove('active');
+    }
+}
+
 function showDashboard() {
     // Hide main sections
     document.querySelectorAll('section:not(#dashboard)').forEach(section => {
@@ -2545,6 +2589,13 @@ function showDashboard() {
     
     // Show dashboard
     document.getElementById('dashboard').style.display = 'block';
+
+    // Keep sidebar state and year in sync on each open
+    closeDashboardSidebar();
+    const memberDashboardYear = document.getElementById('memberDashboardYear');
+    if (memberDashboardYear) {
+        memberDashboardYear.textContent = new Date().getFullYear();
+    }
     
     // Update metrics
     updateDashboardMetrics();
@@ -2566,6 +2617,7 @@ function hideDashboard() {
     // Hide dashboard and LMS
     document.getElementById('dashboard').style.display = 'none';
     document.getElementById('lmsSection').style.display = 'none';
+    closeDashboardSidebar();
     
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });

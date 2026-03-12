@@ -8,6 +8,7 @@
     <meta http-equiv="Expires" content="0">
     <title>Youth Advocates Network Rwanda | Empowering Young Leaders</title>
     <meta name="description" content="Youth Advocates Network (YAN) is Rwanda's leading youth-led umbrella organization connecting youth organizations for advocacy, capacity building, and innovation.">
+    <link rel="stylesheet" href="assets/css/pages/adminDashboard.css?v=20260311b">
     <link rel="stylesheet" href="styles.css?v=20260311b">
 </head>
 <body>
@@ -623,153 +624,140 @@
 
     <!-- Member Dashboard -->
     <section class="dashboard-section" id="dashboard" style="display: none;">
-        <div class="dashboard-container">
-            <aside class="dashboard-sidebar">
-                <div class="dashboard-profile">
-                    <div class="dashboard-avatar">YL</div>
-                    <h3>Young Leader</h3>
-                    <span class="role-badge" id="dashboardRole">Member</span>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <div class="admin-shell">
+            <aside class="admin-sidebar" id="adminSidebar">
+                <div class="admin-brand">
+                    <div class="logo-circle"></div>
+                    <div>
+                        <h1>MEMBER</h1>
+                        <p>Learning Workspace</p>
+                    </div>
                 </div>
-                
-                <nav class="dashboard-nav">
-                    <a href="#dashboard-overview" class="dashboard-nav-item active">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-                            <rect x="3" y="13" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-                            <rect x="13" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-                            <rect x="13" y="13" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                        <span>Overview</span>
-                    </a>
-                    <a href="#dashboard-modules" class="dashboard-nav-item">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <span>My Modules</span>
-                    </a>
-                    <a href="#dashboard-events" class="dashboard-nav-item">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
-                            <path d="M16 2V6M8 2V6M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        <span>My Events</span>
-                    </a>
-                    <a href="#" class="dashboard-nav-item" id="backToSite">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <span>Back to Site</span>
-                    </a>
+
+                <div class="chip" title="signed in role">
+                    <span id="dashboardRole">Member</span>
+                </div>
+
+                <nav class="admin-nav">
+                    <button type="button" class="active">Dashboard</button>
+                    <button type="button">My Applications</button>
+                    <button type="button">Submit Application</button>
+                    <button type="button">Profile</button>
                 </nav>
+
+                <div class="admin-sidebar-footer">
+                    <button type="button" class="btn-sm btn-soft" id="backToSite">Back to Site</button>
+                    <button type="button" class="btn-sm" id="memberDashboardLogout">Logout</button>
+                    <div class="muted small">&copy; <span id="memberDashboardYear"></span> YAN Rwanda</div>
+                </div>
             </aside>
-            
-            <main class="dashboard-main">
-                <div class="dashboard-header">
-                    <h1>Dashboard Overview</h1>
-                    <p>Welcome back! Here's your progress summary</p>
-                </div>
-                
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <div class="metric-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M2 17L12 22L22 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M2 12L12 17L22 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <div class="metric-content">
-                            <div class="metric-value" id="completedModules">0</div>
-                            <div class="metric-label">Completed Modules</div>
+
+            <main class="admin-main">
+                <div class="admin-topbar">
+                    <div class="topbar-left">
+                        <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+                        <div class="admin-title">
+                            <h2>Member Dashboard</h2>
+                            <p>Welcome back! Here's your progress summary</p>
                         </div>
                     </div>
-                    
-                    <div class="metric-card">
-                        <div class="metric-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M14 2V8H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
+
+                    <div class="topbar-right">
+                        <div class="search">
+                            <input type="search" placeholder="Search dashboard..." aria-label="Search dashboard">
                         </div>
-                        <div class="metric-content">
-                            <div class="metric-value" id="pendingAssignments">0</div>
-                            <div class="metric-label">Pending Assignments</div>
-                        </div>
-                    </div>
-                    
-                    <div class="metric-card">
-                        <div class="metric-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <rect x="3" y="4" width="18" height="18" rx="2" stroke="white" stroke-width="2"/>
-                                <path d="M16 2V6M8 2V6M3 10H21" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                        </div>
-                        <div class="metric-content">
-                            <div class="metric-value" id="upcomingEvents">0</div>
-                            <div class="metric-label">Upcoming Events</div>
-                        </div>
-                    </div>
-                    
-                    <div class="metric-card">
-                        <div class="metric-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M2 17L12 22L22 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M2 12L12 17L22 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <div class="metric-content">
-                            <div class="metric-value" id="certificatesEarned">0</div>
-                            <div class="metric-label">Certificates Earned</div>
-                        </div>
+                        <button type="button" class="btn-sm btn-soft">My Applications</button>
+                        <button type="button" class="btn-sm btn-primary-sm">Submit Application</button>
                     </div>
                 </div>
-                
-                <div class="dashboard-content-grid">
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3>Recent Activity</h3>
+
+                <div class="admin-content">
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <div class="stat-icon">📘</div>
+                            <div class="stat-meta">
+                                <div class="value" id="completedModules">0</div>
+                                <div class="label">Completed Modules</div>
+                            </div>
                         </div>
-                        <div class="activity-list" id="activityList">
-                            <div class="activity-item">
-                                <div class="activity-icon">📚</div>
-                                <div class="activity-content">
-                                    <p>Started module: Leadership Fundamentals</p>
-                                    <span class="activity-time">2 hours ago</span>
-                                </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">📝</div>
+                            <div class="stat-meta">
+                                <div class="value" id="pendingAssignments">0</div>
+                                <div class="label">Pending Assignments</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-meta">
+                                <div class="value" id="upcomingEvents">0</div>
+                                <div class="label">Upcoming Events</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">🏅</div>
+                            <div class="stat-meta">
+                                <div class="value" id="certificatesEarned">0</div>
+                                <div class="label">Certificates Earned</div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3>Notifications</h3>
-                            <span class="notification-badge">3</span>
-                        </div>
-                        <div class="notification-list">
-                            <div class="notification-item unread">
-                                <div class="notification-dot"></div>
-                                <div class="notification-content">
-                                    <p>New feedback available on your assignment</p>
-                                    <span class="notification-time">1 hour ago</span>
+
+                    <div class="grid-2">
+                        <section class="panel">
+                            <div class="panel-header">
+                                <h3>Recent Activity</h3>
+                                <div class="hint">Latest updates</div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="activity-list" id="activityList">
+                                    <div class="activity-item">
+                                        <div class="activity-icon">📚</div>
+                                        <div class="activity-content">
+                                            <p>Started module: Leadership Fundamentals</p>
+                                            <span class="activity-time">2 hours ago</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="notification-item unread">
-                                <div class="notification-dot"></div>
-                                <div class="notification-content">
-                                    <p>Upcoming event: Youth Summit 2026</p>
-                                    <span class="notification-time">3 hours ago</span>
+                        </section>
+
+                        <section class="panel">
+                            <div class="panel-header">
+                                <h3>Notifications</h3>
+                                <span class="badge b-pending">3 New</span>
+                            </div>
+                            <div class="panel-body">
+                                <div class="notification-list">
+                                    <div class="notification-item unread">
+                                        <div class="notification-dot"></div>
+                                        <div class="notification-content">
+                                            <p>New feedback available on your assignment</p>
+                                            <span class="notification-time">1 hour ago</span>
+                                        </div>
+                                    </div>
+                                    <div class="notification-item unread">
+                                        <div class="notification-dot"></div>
+                                        <div class="notification-content">
+                                            <p>Upcoming event: Youth Summit 2026</p>
+                                            <span class="notification-time">3 hours ago</span>
+                                        </div>
+                                    </div>
+                                    <div class="notification-item unread">
+                                        <div class="notification-dot"></div>
+                                        <div class="notification-content">
+                                            <p>New opportunity posted: Grant Writing Workshop</p>
+                                            <span class="notification-time">5 hours ago</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="notification-item unread">
-                                <div class="notification-dot"></div>
-                                <div class="notification-content">
-                                    <p>New opportunity posted: Grant Writing Workshop</p>
-                                    <span class="notification-time">5 hours ago</span>
-                                </div>
-                            </div>
-                        </div>
+                        </section>
                     </div>
                 </div>
             </main>
