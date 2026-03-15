@@ -10,6 +10,33 @@
    =================================================== */
 
 (function () {
+  // --------Auth--------
+  function getAuthSession(){
+    const localAuth = localStorage.getItem("yan_auth");
+    const sessionAuth = sessionStorage.getItem("yan_auth");
+    const raw = localAuth || sessionAuth;
+
+    if (!raw) return null;
+
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
+
+  const auth = getAuthSession();
+
+  if(!auth || !auth.token || !auth.user) {
+    window.location.href = "/pages/auth/login.html";
+    return;
+  }
+
+  if(auth.role !== "member") {
+    window.location.href = "/pages/auth/login.html";
+    return;
+  }
+
   // --------- Helpers ----------
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -45,29 +72,29 @@
   // --------- Data ----------
   const YEAR = new Date().getFullYear();
 
-  // Update these module entries to match your real files:
-  // Prefer PDF files inside your repo: /assets/modules/q1/....pdf
-  const MODULES = {
-    Q1: [
-      { id: "q1-m1", title: "Leadership Youth NGOs", description: "Introduction / Foundations.", fileUrl: "/assets/modules/q1/Leadership_Youth_NGOs.pdf" },
-      { id: "q1-m2", title: "Resilience Adaptive Mindset", description: "Core concepts and practice.", fileUrl: "/assets/modules/q1/Resilience_Adaptive_Mindset.pdf" },
-      { id: "q1-m3", title: "Soft Skills Self Management", description: "Assignments and reflection.", fileUrl: "/assets/modules/q1/Soft_Skills_Self_Managment(1).pdf" },
-    ],
-    Q2: [
-      { id: "q2-m1", title: "ME Adaptive Programming Workshop", description: "Growth and planning.", fileUrl: "/assets/modules/q2/ME_Adaptive_Programming_Workshop( Quarter.pdf" },
-      { id: "q2-m2", title: "Project Design Management Training", description: "Implementation strategies.", fileUrl: "/assets/modules/q2/Project_Design_Management_Training( Quarter 2).pdf" }
-    ],
-    Q3: [
-      { id: "q3-m1", title: "Financial Management", description: "Partnerships and collaboration.", fileUrl: "/assets/modules/q3/financial_management [Repaired].pdf" },
-      { id: "q3-m2", title: "Grant Fundraising", description: "Advanced skills.", fileUrl: "/assets/modules/q3/grant_fundraising.pdf" },
-      { id: "q3-m3", title: "Partnership Networking", description: "Case studies.", fileUrl: "/assets/modules/q3/partnership_networking.pdf" },
-      { id: "q3-m3", title: "Sustainability Training", description: "Case studies.", fileUrl: "/assets/modules/q3/sustainability_training.pdf" },
-    ],
-    Q4: [
-      { id: "q4-m1", title: "Digital Advocacy", description: "Capstone planning.", fileUrl: "/assets/modules/q4/digital_advocacy.pdf" },
-      { id: "q4-m2", title: "Inclusive Leadership Social Justice", description: "Capstone execution.", fileUrl: "/assets/modules/q4/Inclusive_Leadership_Social_Justice.pdf" },
-    ],
-  };
+  let MODULES = { Q1: [], Q2: [], Q3: [], Q4: [] };
+
+  function buildModulesFromHTML() {
+    const modules = { Q1: [], Q2: [], Q3: [], Q4: [] };
+
+    $$("#moduleCatalog .mdModuleDef").forEach((el) => {
+      const quarter = (el.dataset.quarter || "").toUpperCase();
+      if (!modules[quarter]) return;
+
+      const id = (el.dataset.id || "").trim();
+      const title = (el.dataset.title || "").trim();
+      if (!id || !title) return;
+
+      modules[quarter].push({
+        id,
+        title,
+        description: (el.dataset.description || "").trim(),
+        fileUrl: (el.dataset.fileUrl || "").trim(),
+      });
+    });
+
+    return modules;
+  }
 
   const STORAGE_KEY = "yan_member_dashboard_v1";
 
@@ -176,7 +203,7 @@
     quarterRange: $("#quarterRange"),
     quarterStatus: $("#quarterStatus"),
     quarterTabs: $$(".mdQuarterTab"),
-    modulesList: $("#modulesList"),
+    modulesList: $("#moduleList"),
 
     // profile
     mdAvatar: $("#mdAvatar"),
@@ -212,6 +239,11 @@
     viewerMeta: $("#viewerMeta"),
     openInNewTabBtn: $("#openInNewTabBtn"),
     markCompleteBtn: $("#markCompleteBtn"),
+
+    //reporting
+    generateReportBtn: $("#generateReportBtn"),
+    reportPreview: $("#reportPreview"),
+    reportPeriod: $("#reportPeriod"),
   };
 
   // --------- Rendering ----------
@@ -468,12 +500,14 @@
     els.viewerMeta.textContent = `${q} • ${status}`;
 
     // Load file
-    els.moduleViewerFrame.src = m.fileUrl || "";
+    els.moduleViewerFrame.src = m.fileUrl ? encodeURI(m.fileUrl) : "";
 
     // Buttons
-    els.openInNewTabBtn.onclick = () => {
-      if (m.fileUrl) window.open(m.fileUrl, "_blank", "noopener");
-    };
+    if (els.openInNewTabBtn) {
+      els.openInNewTabBtn.onclick = () => {
+        if (m.fileUrl) window.open(encodeURI(m.fileUrl), "_blank", "noopener");
+      };
+    }
 
     els.markCompleteBtn.disabled = Boolean(state.progress[moduleId]);
     els.markCompleteBtn.onclick = () => {
@@ -483,6 +517,77 @@
 
     openModal("moduleViewerModal");
   }
+
+  // --------- Reporting ----------
+  function buildReportData() {
+    const period = els.reportPeriod?.value || "all";
+    const modules = Object.entries(MODULES).flatMap(([quarter, items]) =>
+      items.map((item) => ({ quarter, ...item }))
+    );
+
+    const inScope = period === "all" ? modules : modules.filter((m) => m.quarter === period);
+    const completed = inScope.filter((m) => state.progress[m.id]);
+
+    const relatedSubmissions = state.submissions.filter((s) => period === "all" || s.quarter === period);
+
+    return {
+      createdAt: new Date().toISOString(),
+      period,
+      learner: state.profile,
+      totals: {
+        modules: inScope.length,
+        completed: completed.length,
+        completionPercent: inScope.length ? Math.round((completed.length / inScope.length) * 100) : 0,
+        submissions: relatedSubmissions.length,
+      },
+      completedModules: completed.map((m) => ({ quarter: m.quarter, title: m.title })),
+      submissions: relatedSubmissions.map((s) => ({
+        quarter: s.quarter,
+        moduleTitle: s.moduleTitle,
+        fileName: s.fileName,
+        submittedOn: new Date(s.createdAt).toISOString(),
+      })),
+    };
+  }
+
+  function downloadReportFile(fileName, text, mimeType = "text/plain") {
+    const blob = new Blob([text], { type: `${mimeType};charset=utf-8` });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function bindReportingUI() {
+    if (!els.generateReportBtn) return;
+
+    els.generateReportBtn.addEventListener("click", () => {
+      const report = buildReportData();
+      const generatedOn = formatDate(new Date(report.createdAt));
+
+      if (els.reportPreview) {
+        els.reportPreview.innerHTML = `
+          <div class="mdReportLine"><strong>Generated:</strong> ${generatedOn}</div>
+          <div class="mdReportLine"><strong>Period:</strong> ${safeText(report.period)}</div>
+          <div class="mdReportLine"><strong>Completion:</strong> ${report.totals.completed}/${report.totals.modules} (${report.totals.completionPercent}%)</div>
+          <div class="mdReportLine"><strong>Submissions:</strong> ${report.totals.submissions}</div>
+        `;
+      }
+
+      const safeName = state.profile.name.trim().replace(/\s+/g, "-").toLowerCase() || "member";
+      const periodLabel = report.period.toLowerCase();
+      downloadReportFile(
+        `yan-progress-report-${safeName}-${periodLabel}.json`,
+        JSON.stringify(report, null, 2),
+        "application/json"
+      );
+    });
+  }
+
 
   function markModuleComplete(q, moduleId) {
     state.progress[moduleId] = true;
@@ -551,6 +656,10 @@
   }
 
   function bindSubmissionUI() {
+    if (!els.submissionQuarter || !els.submissionModule || !els.dropzone || !els.fileInput || !els.submitAssignmentBtn || !els.submissionHistory) {
+      return;
+    }
+
     // populate initial
     els.submissionQuarter.value = state.selectedQuarter;
     syncSubmissionModuleOptions();
@@ -644,6 +753,7 @@
 
   // --------- Profile editing ----------
   function bindProfileUI() {
+    if (!els.editProfileBtn || !els.editProfileForm) return;
     els.editProfileBtn.addEventListener("click", () => openModal("editProfileModal"));
 
     els.editProfileForm.addEventListener("submit", (e) => {
@@ -662,6 +772,8 @@
 
   // --------- Quarter tab switching ----------
   function bindQuarterTabs() {
+    if (!els.quarterTabs?.length) return;
+
     els.quarterTabs.forEach((btn) => {
       btn.addEventListener("click", () => {
         const q = btn.dataset.quarter;
@@ -690,6 +802,8 @@
 
   // --------- Module card actions ----------
   function bindModuleActions() {
+    if (!els.modulesList) return;
+
     els.modulesList.addEventListener("click", (e) => {
       const btn = e.target.closest("button[data-action]");
       if (!btn) return;
@@ -699,7 +813,10 @@
       const id = btn.dataset.id;
 
       if (action === "view") {
-        openModuleViewer(q, id);
+        const mod = (MODULES[q] || []).find((m) => m.id === id);
+        if (mod?.fileUrl) {
+          window.open(mod.fileUrl, "_blank", "noopener");
+        }
       }
       if (action === "complete") {
         markModuleComplete(q, id);
@@ -709,6 +826,10 @@
 
   // --------- Initial render ----------
   function renderAll() {
+    if (!els.modulesList || !els.quarterName || !els.quarterRange || !els.quarterStatus) {
+      return;
+    }
+
     // Fix selected quarter if it is locked
     if (!canAccessQuarter(state.selectedQuarter)) {
       state.selectedQuarter = currentOpenQuarter();
@@ -731,12 +852,14 @@
 
   // --------- Boot ----------
   document.addEventListener("DOMContentLoaded", () => {
+    MODULES = buildModulesFromHTML();
     // navbar/footer are injected by include.js already
     bindModalClosers();
     bindProfileUI();
     bindQuarterTabs();
     bindModuleActions();
     bindSubmissionUI();
+    bindReportingUI();
     renderAll();
   });
 })();

@@ -656,7 +656,7 @@ const capacityPdfFallback = {
 let capacityDocumentsCache = {};
 let capacitySearchTerm = '';
 
-const opportunitiesData = [
+const defaultOpportunitiesData = [
     {
         id: 1,
         type: "funding",
@@ -713,7 +713,7 @@ const opportunitiesData = [
     }
 ];
 
-const eventsData = [
+const defaultEventsData = [
     {
         id: 1,
         title: "Youth Summit 2026",
@@ -773,6 +773,14 @@ let currentUser = JSON.parse(localStorage.getItem('yanUser')) || null;
 let currentModule = null;
 let currentGalleryIndex = 0;
 
+const opportunitiesStorageKey = 'yanOpportunitiesData';
+const eventsStorageKey = 'yanEventsData';
+const adminOpportunitiesStorageKey = 'yan_opportunities';
+const adminEventsStorageKey = 'yan_events';
+
+const opportunitiesData = [...defaultOpportunitiesData];
+const eventsData = [...defaultEventsData];
+
 // Initialize module progress from localStorage
 function getModuleProgress(moduleId) {
     const progress = localStorage.getItem(`module_${moduleId}_progress`);
@@ -792,6 +800,162 @@ function saveModuleProgress(moduleId, progress) {
     updateDashboardMetrics();
 }
 
+function hydrateContentFromStorage() {
+    const storedOpportunities = localStorage.getItem(opportunitiesStorageKey);
+    const storedEvents = localStorage.getItem(eventsStorageKey);
+    const adminStoredOpportunities = localStorage.getItem(adminOpportunitiesStorageKey);
+    const adminStoredEvents = localStorage.getItem(adminEventsStorageKey);
+
+    if (storedOpportunities) {
+        try {
+            const parsed = JSON.parse(storedOpportunities);
+            if (Array.isArray(parsed)) {
+                opportunitiesData.splice(0, opportunitiesData.length, ...parsed);
+            }
+        } catch (error) {
+            console.warn('Unable to parse saved opportunities.', error);
+        }
+    }
+
+    if (storedEvents) {
+        try {
+            const parsed = JSON.parse(storedEvents);
+            if (Array.isArray(parsed)) {
+                eventsData.splice(0, eventsData.length, ...parsed);
+            }
+        } catch (error) {
+            console.warn('Unable to parse saved events.', error);
+        }
+    }
+
+    if (!storedOpportunities && adminStoredOpportunities) {
+        try {
+            const parsed = JSON.parse(adminStoredOpportunities);
+            if (Array.isArray(parsed) && parsed.length) {
+                const mapped = parsed.map((opp, index) => ({
+                    id: index + 1,
+                    type: opp.type || 'funding',
+                    title: opp.title,
+                    description: opp.description,
+                    deadline: opp.deadline || 'Rolling basis',
+                    provider: opp.provider || 'YAN Rwanda'
+                }));
+
+                opportunitiesData.splice(0, opportunitiesData.length, ...mapped);
+                persistOpportunities();
+            }
+        } catch (error) {
+            console.warn('Unable to parse admin opportunities.', error);
+        }
+    }
+
+    if (!storedEvents && adminStoredEvents) {
+        try {
+            const parsed = JSON.parse(adminStoredEvents);
+            if (Array.isArray(parsed) && parsed.length) {
+                const mapped = parsed.map((event, index) => ({
+                    id: index + 1,
+                    title: event.title,
+                    description: event.description,
+                    date: event.date,
+                    time: event.time || 'TBD',
+                    location: event.location,
+                    type: event.type || 'Event'
+                }));
+
+                eventsData.splice(0, eventsData.length, ...mapped);
+                persistEvents();
+            }
+        } catch (error) {
+            console.warn('Unable to parse admin events.', error);
+        }
+    }
+}
+
+function persistOpportunities() {
+    localStorage.setItem(opportunitiesStorageKey, JSON.stringify(opportunitiesData));
+}
+
+function persistEvents() {
+    localStorage.setItem(eventsStorageKey, JSON.stringify(eventsData));
+}
+
+function initializeAdminContentManager() {
+    const opportunityForm = document.getElementById('adminOpportunityForm');
+    const eventForm = document.getElementById('adminEventForm');
+
+    if (opportunityForm) {
+        opportunityForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            createOpportunityFromAdminForm(opportunityForm);
+        });
+    }
+
+    if (eventForm) {
+        eventForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            createEventFromAdminForm(eventForm);
+        });
+    }
+}
+
+function nextItemId(items) {
+    const maxId = items.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
+    return maxId + 1;
+}
+
+function createOpportunityFromAdminForm(form) {
+    const opportunity = {
+        id: nextItemId(opportunitiesData),
+        type: document.getElementById('adminOpportunityType').value,
+        title: document.getElementById('adminOpportunityTitle').value.trim(),
+        description: document.getElementById('adminOpportunityDescription').value.trim(),
+        deadline: document.getElementById('adminOpportunityDeadline').value.trim(),
+        provider: document.getElementById('adminOpportunityProvider').value.trim()
+    };
+
+    const amount = document.getElementById('adminOpportunityAmount').value.trim();
+    const duration = document.getElementById('adminOpportunityDuration').value.trim();
+
+    if (amount) {
+        opportunity.amount = amount;
+    }
+
+    if (duration) {
+        opportunity.duration = duration;
+    }
+
+    opportunitiesData.unshift(opportunity);
+    persistOpportunities();
+
+    const activeFilter = document.querySelector('#opportunityFilters .filter-tab.active')?.dataset.filter || 'all';
+    renderOpportunities(activeFilter);
+    form.reset();
+
+    showNotification('Opportunity saved and published on the landing page.');
+}
+
+function createEventFromAdminForm(form) {
+    const event = {
+        id: nextItemId(eventsData),
+        title: document.getElementById('adminEventTitle').value.trim(),
+        description: document.getElementById('adminEventDescription').value.trim(),
+        date: document.getElementById('adminEventDate').value,
+        time: document.getElementById('adminEventTime').value.trim(),
+        location: document.getElementById('adminEventLocation').value.trim(),
+        type: document.getElementById('adminEventType').value.trim()
+    };
+
+    eventsData.push(event);
+    eventsData.sort((a, b) => new Date(a.date) - new Date(b.date));
+    persistEvents();
+    renderEvents();
+    updateDashboardMetrics();
+    form.reset();
+
+    showNotification('Event saved and published on the landing page.');
+}
+
 // ================================
 // INITIALIZATION
 // ================================
@@ -801,6 +965,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeApp() {
+    hydrateContentFromStorage();
+
+    currentUser = null;
+    localStorage.removeItem('yanUser');
+    currentRole = 'public';
+    localStorage.setItem('yanRole', 'public');
+
     // Initialize role
     updateRoleDisplay(currentRole);
     
@@ -820,6 +991,7 @@ function initializeApp() {
     initializeEvents();
     initializeGallery();
     initializeContact();
+    initializeAdminContentManager();
     initializeMandateToggle();
     initializeAboutCardsToggle();
     
@@ -960,11 +1132,11 @@ function initializeNavigation() {
         });
     });
     
-    // Login button
-    const loginBtn = document.getElementById('loginBtn');
-    loginBtn.addEventListener('click', () => {
-        simulateLogin();
-    });
+    // // Login button
+    // const loginBtn = document.getElementById('loginBtn');
+    // loginBtn.addEventListener('click', () => {
+    //     simulateLogin();
+    // });
     
     // Profile dropdown
     const profileBtn = document.getElementById('profileBtn');
@@ -2502,8 +2674,17 @@ function registerOpportunity(id) {
 // ================================
 
 function initializeEvents() {
+    renderEvents();
+}
+
+function renderEvents(){
     const grid = document.getElementById('eventsGrid');
-    
+    if (!grid) {
+        return;
+    }
+
+    grid.innerHTML = '';
+
     eventsData.forEach(event => {
         const card = createEventCard(event);
         grid.appendChild(card);
@@ -2515,8 +2696,9 @@ function createEventCard(event) {
     card.className = 'event-card reveal';
     
     const date = new Date(event.date);
-    const day = date.getDate();
-    const month = date.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+    const isValidDate = !Number.isNaN(date.getTime());
+    const day = isValidDate ? date.getDate() : 'TBD';
+    const month = isValidDate ? date.toLocaleDateString('en-US', {month: 'short' }).toUpperCase() : 'DATE';
     
     card.innerHTML = `
         <div class="event-date">
