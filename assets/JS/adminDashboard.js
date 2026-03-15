@@ -9,6 +9,8 @@ const LS_KEYS = {
   ASSIGNMENTS: "yan_assignments",
   OPPS: "yan_opportunities",
   EVENTS: "yan_events",
+  LANDING_OPPS: "yanOpportunitiesData",
+  LANDING_EVENTS: "yanEventsData",
 };
 
 const state = {
@@ -22,6 +24,36 @@ function safeJSONParse(value, fallback) {
 }
 function loadList(key) { return safeJSONParse(localStorage.getItem(key), []); }
 function saveList(key, list) { localStorage.setItem(key, JSON.stringify(list)); }
+
+function saveSharedList(adminKey, landingKey, adminList, landingList) {
+  localStorage.setItem(adminKey, JSON.stringify(adminList));
+  localStorage.setItem(landingKey, JSON.stringify(landingList));
+}
+
+function mapOppsToLanding(opps) {
+  return opps.map((opp, index) => ({
+    id: index + 1,
+    type: opp.type || "funding",
+    title: opp.title,
+    description: opp.description,
+    deadline: "Rolling basis",
+    provider: "YAN Rwanda"
+  }));
+}
+
+function mapEventsToLanding(events) {
+  const fallbackDate = new Date().toISOString().split("T")[0];
+  return events.map((event, index) => ({
+    id: index + 1,
+    title: event.title,
+    description: event.description,
+    date: event.date || fallbackDate,
+    time: "TBD",
+    location: event.location,
+    type: "Event"
+  }));
+}
+
 function uid(prefix) { return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`; }
 
 function formatDate(iso) {
@@ -116,12 +148,285 @@ function switchView(view) {
   $(map[view]).style.display = "block";
 
   $("pageTitle").textContent = VIEW_META[view].title;
-  $("pageSubtitle").textContent = VIEW_META[view].subtitle;
+  const pageSubtitle = $("pageSubtitle");
+  if (pageSubtitle) {
+    pageSubtitle.textContent = VIEW_META[view].subtitle;
+  }
   $("primaryActionBtn").textContent = VIEW_META[view].primary;
 
   $("globalSearch").value = "";
   state.search = "";
 
+  renderAll();
+}
+
+/* ===== Courses (safe placeholders) ===== */
+function renderCourses() {
+  const tbody = $("coursesTbody");
+  const empty = $("coursesEmpty");
+  if (!tbody || !empty) return;
+
+  const courses = loadList(LS_KEYS.COURSES);
+  tbody.innerHTML = "";
+  empty.style.display = courses.length ? "none" : "block";
+
+  courses.forEach((course) => {
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${escapeHTML(course.title || "-")}</td>
+        <td>${escapeHTML(course.quarter || "-")}</td>
+        <td><span class="muted">Managed in saved data</span></td>
+      </tr>
+    `);
+  });
+}
+
+function resetCourseForm() {
+  if ($("courseId")) $("courseId").value = "";
+  if ($("courseTitle")) $("courseTitle").value = "";
+  if ($("courseQuarter")) $("courseQuarter").value = "Q1";
+  if ($("courseDesc")) $("courseDesc").value = "";
+}
+
+/* ===== Assignments (safe placeholders) ===== */
+function renderAssignments() {
+  const tbody = $("assignmentsTbody");
+  const empty = $("assignmentsEmpty");
+  if (!tbody || !empty) return;
+
+  const assignments = loadList(LS_KEYS.ASSIGNMENTS);
+  tbody.innerHTML = "";
+  empty.style.display = assignments.length ? "none" : "block";
+
+  assignments.forEach((assignment) => {
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${escapeHTML(assignment.title || "-")}</td>
+        <td>${escapeHTML(assignment.courseTitle || "-")}</td>
+        <td>${escapeHTML(formatDate(assignment.dueDate || ""))}</td>
+        <td><span class="muted">Managed in saved data</span></td>
+      </tr>
+    `);
+  });
+}
+
+function resetAssignmentForm() {
+  if ($("assignmentId")) $("assignmentId").value = "";
+  if ($("assignmentCourse")) $("assignmentCourse").value = "";
+  if ($("assignmentTitle")) $("assignmentTitle").value = "";
+  if ($("assignmentDue")) $("assignmentDue").value = "";
+  if ($("assignmentDesc")) $("assignmentDesc").value = "";
+}
+
+/* ===== Opportunities ===== */
+function resetOppForm() {
+  $("oppId").value = "";
+  $("oppType").value = "funding";
+  $("oppTitle").value = "";
+  $("oppLink").value = "";
+  $("oppDesc").value = "";
+}
+
+function renderOpps() {
+  const tbody = $("oppsTbody");
+  const empty = $("oppsEmpty");
+  let opps = loadList(LS_KEYS.OPPS);
+
+  if (state.search) {
+    const q = state.search.toLowerCase();
+    opps = opps.filter((opp) =>
+      (opp.title || "").toLowerCase().includes(q) ||
+      (opp.type || "").toLowerCase().includes(q) ||
+      (opp.description || "").toLowerCase().includes(q)
+    );
+  }
+
+  tbody.innerHTML = "";
+  if (!opps.length) {
+    empty.style.display = "block";
+    return;
+  }
+
+  empty.style.display = "none";
+  opps.forEach((opp) => {
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>
+          <div style="font-weight: 900; color: var(--secondary);">${escapeHTML(opp.title)}</div>
+          <div class="muted">${escapeHTML(opp.description || "")}</div>
+        </td>
+        <td>${escapeHTML(opp.type || "-")}</td>
+        <td>
+          <div class="actions" style="margin: 0;">
+            <button class="btn-sm btn-soft" data-edit-opp="${opp.id}">Edit</button>
+            <button class="btn-sm btn-danger-sm" data-del-opp="${opp.id}">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `);
+  });
+
+  tbody.querySelectorAll("button[data-edit-opp]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const opp = loadList(LS_KEYS.OPPS).find((item) => item.id === btn.dataset.editOpp);
+      if (!opp) return;
+      $("oppId").value = opp.id;
+      $("oppType").value = opp.type || "funding";
+      $("oppTitle").value = opp.title || "";
+      $("oppLink").value = opp.link || "";
+      $("oppDesc").value = opp.description || "";
+      $("oppTitle").focus();
+    });
+  });
+
+  tbody.querySelectorAll("button[data-del-opp]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const oppsList = loadList(LS_KEYS.OPPS).filter((item) => item.id !== btn.dataset.delOpp);
+      saveSharedList(LS_KEYS.OPPS, LS_KEYS.LANDING_OPPS, oppsList, mapOppsToLanding(oppsList));
+      renderAll();
+    });
+  });
+}
+
+function saveOpportunity() {
+  const id = $("oppId").value || uid("opp");
+  const title = $("oppTitle").value.trim();
+  const type = $("oppType").value;
+  const link = $("oppLink").value.trim();
+  const description = $("oppDesc").value.trim();
+
+  if (!title || !description) {
+    alert("Please provide opportunity title and description.");
+    return;
+  }
+
+  const opps = loadList(LS_KEYS.OPPS);
+  const payload = { id, title, type, link, description, updatedAt: new Date().toISOString() };
+  const idx = opps.findIndex((opp) => opp.id === id);
+
+  if (idx === -1) {
+    opps.unshift({ ...payload, createdAt: new Date().toISOString() });
+  } else {
+    opps[idx] = { ...opps[idx], ...payload };
+  }
+
+  // Keep landing page contract in sync
+  saveSharedList(LS_KEYS.OPPS, LS_KEYS.LANDING_OPPS, opps, mapOppsToLanding(opps));
+  resetOppForm();
+  renderAll();
+}
+
+/* ===== Events ===== */
+function resetEventForm() {
+  $("eventId").value = "";
+  $("eventTitle").value = "";
+  $("eventDate").value = "";
+  $("eventLocation").value = "";
+  $("eventDesc").value = "";
+}
+
+function renderEvents() {
+  const tbody = $("eventsTbody");
+  const empty = $("eventsEmpty");
+  let events = loadList(LS_KEYS.EVENTS);
+
+  if (state.search) {
+    const q = state.search.toLowerCase();
+    events = events.filter((event) =>
+      (event.title || "").toLowerCase().includes(q) ||
+      (event.location || "").toLowerCase().includes(q) ||
+      (event.description || "").toLowerCase().includes(q)
+    );
+  }
+
+  tbody.innerHTML = "";
+  if (!events.length) {
+    empty.style.display = "block";
+    return;
+  }
+
+  empty.style.display = "none";
+  events.sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+  events.forEach((event) => {
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>
+          <div style="font-weight: 900; color: var(--secondary);">${escapeHTML(event.title)}</div>
+          <div class="muted">${escapeHTML(event.location || "")}</div>
+        </td>
+        <td>${escapeHTML(formatDate(event.date || ""))}</td>
+        <td>
+          <div class="actions" style="margin: 0;">
+            <button class="btn-sm btn-soft" data-edit-event="${event.id}">Edit</button>
+            <button class="btn-sm btn-danger-sm" data-del-event="${event.id}">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `);
+  });
+
+  tbody.querySelectorAll("button[data-edit-event]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const event = loadList(LS_KEYS.EVENTS).find((item) => item.id === btn.dataset.editEvent);
+      if (!event) return;
+      $("eventId").value = event.id;
+      $("eventTitle").value = event.title || "";
+      $("eventDate").value = event.date || "";
+      $("eventLocation").value = event.location || "";
+      $("eventDesc").value = event.description || "";
+      $("eventTitle").focus();
+    });
+  });
+
+  tbody.querySelectorAll("button[data-del-event]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const eventsList = loadList(LS_KEYS.EVENTS).filter((item) => item.id !== btn.dataset.delEvent);
+      saveSharedList(LS_KEYS.EVENTS, LS_KEYS.LANDING_EVENTS, eventsList, mapEventsToLanding(eventsList));
+      renderAll();
+    });
+  });
+}
+
+function saveEvent() {
+  const id = $("eventId").value || uid("event");
+  const title = $("eventTitle").value.trim();
+  const date = $("eventDate").value;
+  const location = $("eventLocation").value.trim();
+  const description = $("eventDesc").value.trim();
+
+  if (!title || !date || !location || !description) {
+    alert("Please complete all required fields.");
+    return;
+  }
+
+  const list = loadList(LS_KEYS.EVENTS);
+  const idx = list.findIndex(e => e.id === id);
+
+  const item = {
+    id,
+    title,
+    date,
+    location,
+    description,
+    updatedAt: new Date().toISOString()
+  };
+
+  if (idx >= 0) {
+    list[idx] = {...list[idx], ...item };
+  } else {
+    list.unshift({...item, createdAt: new Date().toISOString() });
+  }
+
+  list.sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+
+  saveSharedList(
+    LS_KEYS.EVENTS,
+    LS_KEYS.LANDING_EVENTS,
+    list,
+    mapEventsToLanding(list)
+  );
+
+  resetEventForm();
   renderAll();
 }
 
@@ -400,8 +705,349 @@ YAN Admin Team`;
   renderAll();
 }
 
-/* ===== The rest of your Courses/Assignments/Opportunities/Events code can stay as-is ===== */
-/* (no changes needed below unless you want improvements) */
+/* ===== Courses ===== */
+function resetCourseForm() {
+  $("courseId").value = "";
+  $("courseTitle").value = "";
+  $("courseQuarter").value = "Q1";
+  $("courseDesc").value = "";
+}
+
+function saveCourse() {
+  const id = $("courseId").value || uid("course");
+  const title = $("courseTitle").value.trim();
+  const quarter = $("courseQuarter").value;
+  const description = $("courseDesc").value.trim();
+  if (!title) return;
+
+  const courses = loadList(LS_KEYS.COURSES);
+  const idx = courses.findIndex(c => c.id === id);
+  const item = { id, title, quarter, description, updatedAt: new Date().toISOString() };
+  if (idx >= 0) courses[idx] = { ...courses[idx], ...item };
+  else courses.unshift({ ...item, createdAt: new Date().toISOString() });
+
+  saveList(LS_KEYS.COURSES, courses);
+  resetCourseForm();
+  renderAll();
+}
+
+function renderCourses() {
+  const tbody = $("coursesTbody");
+  const empty = $("coursesEmpty");
+  let courses = loadList(LS_KEYS.COURSES);
+
+  if (state.search) {
+    const q = state.search.toLowerCase();
+    courses = courses.filter(c =>
+      (c.title || "").toLowerCase().includes(q) ||
+      (c.quarter || "").toLowerCase().includes(q) ||
+      (c.description || "").toLowerCase().includes(q)
+    );
+  }
+
+  tbody.innerHTML = "";
+  if (!courses.length) {
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+
+  for (const c of courses) {
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${escapeHTML(c.title)}</td>
+        <td>${escapeHTML(c.quarter || "-")}</td>
+        <td>
+          <div class="actions" style="margin:0;">
+            <button class="btn-sm btn-soft" data-act="edit-course" data-id="${c.id}">Edit</button>
+            <button class="btn-sm btn-danger-sm" data-act="del-course" data-id="${c.id}">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `);
+  }
+
+  tbody.querySelectorAll("button[data-act]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const coursesList = loadList(LS_KEYS.COURSES);
+      const id = btn.dataset.id;
+      if (btn.dataset.act === "edit-course") {
+        const c = coursesList.find(x => x.id === id);
+        if (!c) return;
+        $("courseId").value = c.id;
+        $("courseTitle").value = c.title || "";
+        $("courseQuarter").value = c.quarter || "Q1";
+        $("courseDesc").value = c.description || "";
+      } else {
+        saveList(LS_KEYS.COURSES, coursesList.filter(x => x.id !== id));
+        renderAll();
+      }
+    });
+  });
+}
+
+/* ===== Assignments ===== */
+function resetAssignmentForm() {
+  $("assignmentId").value = "";
+  $("assignmentCourse").value = "";
+  $("assignmentTitle").value = "";
+  $("assignmentDue").value = "";
+  $("assignmentDesc").value = "";
+}
+
+function populateAssignmentCourses() {
+  const select = $("assignmentCourse");
+  const courses = loadList(LS_KEYS.COURSES);
+  const current = select.value;
+  select.innerHTML = '<option value="">Select a course</option>';
+  courses.forEach(c => {
+    select.insertAdjacentHTML("beforeend", `<option value="${c.id}">${escapeHTML(c.title)}</option>`);
+  });
+  if (current && courses.some(c => c.id === current)) select.value = current;
+}
+
+function saveAssignment() {
+  const id = $("assignmentId").value || uid("assignment");
+  const courseId = $("assignmentCourse").value;
+  const title = $("assignmentTitle").value.trim();
+  const dueDate = $("assignmentDue").value;
+  const description = $("assignmentDesc").value.trim();
+  if (!courseId || !title) return;
+
+  const assignments = loadList(LS_KEYS.ASSIGNMENTS);
+  const idx = assignments.findIndex(a => a.id === id);
+  const item = { id, courseId, title, dueDate, description, updatedAt: new Date().toISOString() };
+  if (idx >= 0) assignments[idx] = { ...assignments[idx], ...item };
+  else assignments.unshift({ ...item, createdAt: new Date().toISOString() });
+
+  saveList(LS_KEYS.ASSIGNMENTS, assignments);
+  resetAssignmentForm();
+  renderAll();
+}
+
+function renderAssignments() {
+  populateAssignmentCourses();
+  const tbody = $("assignmentsTbody");
+  const empty = $("assignmentsEmpty");
+  const courseMap = Object.fromEntries(loadList(LS_KEYS.COURSES).map(c => [c.id, c.title]));
+  let assignments = loadList(LS_KEYS.ASSIGNMENTS);
+
+  if (state.search) {
+    const q = state.search.toLowerCase();
+    assignments = assignments.filter(a =>
+      (a.title || "").toLowerCase().includes(q) ||
+      (courseMap[a.courseId] || "").toLowerCase().includes(q)
+    );
+  }
+
+  tbody.innerHTML = "";
+  if (!assignments.length) {
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+
+  for (const a of assignments) {
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${escapeHTML(a.title)}</td>
+        <td>${escapeHTML(courseMap[a.courseId] || "Unknown course")}</td>
+        <td>${escapeHTML(formatDate(a.dueDate))}</td>
+        <td>
+          <div class="actions" style="margin:0;">
+            <button class="btn-sm btn-soft" data-act="edit-assignment" data-id="${a.id}">Edit</button>
+            <button class="btn-sm btn-danger-sm" data-act="del-assignment" data-id="${a.id}">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `);
+  }
+
+  tbody.querySelectorAll("button[data-act]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const list = loadList(LS_KEYS.ASSIGNMENTS);
+      const id = btn.dataset.id;
+      if (btn.dataset.act === "edit-assignment") {
+        const a = list.find(x => x.id === id);
+        if (!a) return;
+        $("assignmentId").value = a.id;
+        $("assignmentCourse").value = a.courseId || "";
+        $("assignmentTitle").value = a.title || "";
+        $("assignmentDue").value = a.dueDate || "";
+        $("assignmentDesc").value = a.description || "";
+      } else {
+        saveList(LS_KEYS.ASSIGNMENTS, list.filter(x => x.id !== id));
+        renderAll();
+      }
+    });
+  });
+}
+
+/* ===== Opportunities ===== */
+function resetOppForm() {
+  $("oppId").value = "";
+  $("oppType").value = "funding";
+  $("oppTitle").value = "";
+  $("oppLink").value = "";
+  $("oppDesc").value = "";
+}
+
+function saveOpp() {
+  const id = $("oppId").value || uid("opp");
+  const type = $("oppType").value;
+  const title = $("oppTitle").value.trim();
+  const link = $("oppLink").value.trim();
+  const description = $("oppDesc").value.trim();
+  if (!title) return;
+
+  const list = loadList(LS_KEYS.OPPS);
+  const idx = list.findIndex(o => o.id === id);
+  const item = { id, type, title, link, description, updatedAt: new Date().toISOString() };
+  if (idx >= 0) list[idx] = { ...list[idx], ...item };
+  else list.unshift({ ...item, createdAt: new Date().toISOString() });
+
+  saveList(LS_KEYS.OPPS, list);
+  resetOppForm();
+  renderAll();
+}
+
+function renderOpps() {
+  const tbody = $("oppsTbody");
+  const empty = $("oppsEmpty");
+  let opps = loadList(LS_KEYS.OPPS);
+
+  if (state.search) {
+    const q = state.search.toLowerCase();
+    opps = opps.filter(o =>
+      (o.title || "").toLowerCase().includes(q) ||
+      (o.type || "").toLowerCase().includes(q)
+    );
+  }
+
+  tbody.innerHTML = "";
+  if (!opps.length) {
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+
+  for (const o of opps) {
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${escapeHTML(o.title)}</td>
+        <td>${escapeHTML(o.type)}</td>
+        <td>
+          <div class="actions" style="margin:0;">
+            <button class="btn-sm btn-soft" data-act="edit-opp" data-id="${o.id}">Edit</button>
+            <button class="btn-sm btn-danger-sm" data-act="del-opp" data-id="${o.id}">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `);
+  }
+
+  tbody.querySelectorAll("button[data-act]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const list = loadList(LS_KEYS.OPPS);
+      const id = btn.dataset.id;
+      if (btn.dataset.act === "edit-opp") {
+        const o = list.find(x => x.id === id);
+        if (!o) return;
+        $("oppId").value = o.id;
+        $("oppType").value = o.type || "funding";
+        $("oppTitle").value = o.title || "";
+        $("oppLink").value = o.link || "";
+        $("oppDesc").value = o.description || "";
+      } else {
+        saveList(LS_KEYS.OPPS, list.filter(x => x.id !== id));
+        renderAll();
+      }
+    });
+  });
+}
+
+/* ===== Events ===== */
+function resetEventForm() {
+  $("eventId").value = "";
+  $("eventTitle").value = "";
+  $("eventDate").value = "";
+  $("eventLocation").value = "";
+  $("eventDesc").value = "";
+}
+
+// function saveEvent() {
+//   const id = $("eventId").value || uid("event");
+//   const title = $("eventTitle").value.trim();
+//   const date = $("eventDate").value;
+//   const location = $("eventLocation").value.trim();
+//   const description = $("eventDesc").value.trim();
+//   if (!title) return;
+
+//   const list = loadList(LS_KEYS.EVENTS);
+//   const idx = list.findIndex(e => e.id === id);
+//   const item = { id, title, date, location, description, updatedAt: new Date().toISOString() };
+//   if (idx >= 0) list[idx] = { ...list[idx], ...item };
+//   else list.unshift({ ...item, createdAt: new Date().toISOString() });
+
+//   saveList(LS_KEYS.EVENTS, list);
+//   resetEventForm();
+//   renderAll();
+// }
+
+function renderEvents() {
+  const tbody = $("eventsTbody");
+  const empty = $("eventsEmpty");
+  let events = loadList(LS_KEYS.EVENTS);
+
+  if (state.search) {
+    const q = state.search.toLowerCase();
+    events = events.filter(e =>
+      (e.title || "").toLowerCase().includes(q) ||
+      (e.location || "").toLowerCase().includes(q)
+    );
+  }
+
+  tbody.innerHTML = "";
+  if (!events.length) {
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+
+  for (const e of events) {
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${escapeHTML(e.title)}</td>
+        <td>${escapeHTML(formatDate(e.date))}</td>
+        <td>
+          <div class="actions" style="margin:0;">
+            <button class="btn-sm btn-soft" data-act="edit-event" data-id="${e.id}">Edit</button>
+            <button class="btn-sm btn-danger-sm" data-act="del-event" data-id="${e.id}">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `);
+  }
+
+  tbody.querySelectorAll("button[data-act]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const list = loadList(LS_KEYS.EVENTS);
+      const id = btn.dataset.id;
+      if (btn.dataset.act === "edit-event") {
+        const e = list.find(x => x.id === id);
+        if (!e) return;
+        $("eventId").value = e.id;
+        $("eventTitle").value = e.title || "";
+        $("eventDate").value = e.date || "";
+        $("eventLocation").value = e.location || "";
+        $("eventDesc").value = e.description || "";
+      } else {
+        saveList(LS_KEYS.EVENTS, list.filter(x => x.id !== id));
+        renderAll();
+      }
+    });
+  });
+}
 
 /* ===== Seed Demo ===== */
 function seedDemoApplications(n = 2) {
@@ -456,6 +1102,14 @@ function init() {
     renderAll();
   });
 
+  // Opportunities
+  $("saveOppBtn").addEventListener("click", saveOpportunity);
+  $("resetOppBtn").addEventListener("click", resetOppForm);
+
+  // Events
+  $("saveEventBtn").addEventListener("click", saveEvent);
+  $("resetEventBtn").addEventListener("click", resetEventForm);
+
   $("rejectCloseBtn").addEventListener("click", closeRejectModal);
   $("cancelRejectBtn").addEventListener("click", closeRejectModal);
   $("confirmRejectBtn").addEventListener("click", () => {
@@ -465,7 +1119,14 @@ function init() {
     rejectApplicationWithEmail(id, msg);
   });
 
-  // $("seedBtn").addEventListener("click", seedDemoCore);
+  $("saveCourseBtn").addEventListener("click", saveCourse);
+  $("resetCourseBtn").addEventListener("click", resetCourseForm);
+
+  $("saveAssignmentBtn").addEventListener("click", saveAssignment);
+  $("resetAssignmentBtn").addEventListener("click", resetAssignmentForm);
+
+
+  $("seedBtn").addEventListener("click", () => { seedDemoApplications(2); renderAll(); });
 
   $("goHomeBtn").addEventListener("click", () => window.location.href = "/index.html");
 

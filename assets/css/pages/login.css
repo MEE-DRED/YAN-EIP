@@ -1,22 +1,31 @@
-body.yan-login{
+body.yan-login {
   min-height: 100vh;
   background: var(--gradient-hero);
   color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+body.yan-login #navbarMount,
+body.yan-login #footerMount {
+  position: relative;
+  z-index: 3;
 }
 
 /* Layout */
-body.yan-login .main{
-  min-height: calc(100vh - 120px);
-  display: grid;
-  place-items: center;
+body.yan-login .main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 2.5rem 1rem 3rem;
   position: relative;
   overflow: hidden;
 }
 
-/* Soft blobs behind (no extra HTML needed) */
+/* Soft blobs behind */
 body.yan-login .main::before,
-body.yan-login .main::after{
+body.yan-login .main::after {
   content: "";
   position: absolute;
   width: 520px;
@@ -28,27 +37,30 @@ body.yan-login .main::after{
   pointer-events: none;
   animation: yanLoginFloat 18s ease-in-out infinite;
 }
-body.yan-login .main::before{
+
+body.yan-login .main::before {
   background: rgba(0, 180, 216, 0.55);
   top: -18%;
   left: -20%;
 }
-body.yan-login .main::after{
+
+body.yan-login .main::after {
   background: rgba(3, 4, 94, 0.55);
   bottom: -22%;
   right: -22%;
   animation-delay: 5s;
 }
 
-@keyframes yanLoginFloat{
-  0%,100%{ transform: translate(0,0) scale(1); }
-  33%{ transform: translate(26px,-26px) scale(1.06); }
-  66%{ transform: translate(-18px,18px) scale(0.94); }
+@keyframes yanLoginFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(26px, -26px) scale(1.06); }
+  66% { transform: translate(-18px, 18px) scale(0.94); }
 }
 
 /* Card */
-body.yan-login .card{
-  width: min(440px, 100%);
+body.yan-login .card {
+  width: 100%;
+  max-width: 440px;
   padding: 2rem 1.75rem;
   border-radius: var(--radius-2xl);
   background: rgba(255, 255, 255, 0.12);
@@ -60,7 +72,7 @@ body.yan-login .card{
 }
 
 /* Title / subtitle */
-body.yan-login .title{
+body.yan-login .title {
   margin: 0 0 0.4rem;
   font-family: var(--font-display);
   font-size: 2rem;
@@ -69,7 +81,7 @@ body.yan-login .title{
   color: #fff;
 }
 
-body.yan-login .subtitle{
+body.yan-login .subtitle {
   margin: 0 0 1.25rem;
   font-size: 0.95rem;
   opacity: 0.92;
@@ -77,158 +89,195 @@ body.yan-login .subtitle{
 }
 
 /* Alert */
-body.yan-login .alert{
-  display: none; /* your JS should add a class to show it */
+body.yan-login .alert {
+  display: none;
   padding: 0.75rem 0.9rem;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.10);
   margin-bottom: 1rem;
   font-size: 0.92rem;
-  color: rgba(255,255,255,0.92);
+  color: rgba(255, 255, 255, 0.92);
 }
 
-/* Optional: If you add these classes via JS */
-body.yan-login .alert.show{ display: block; }
-body.yan-login .alert.danger{
+body.yan-login .alert.show {
+  display: block;
+}
+
+body.yan-login .alert.danger {
   display: block;
   background: rgba(239, 68, 68, 0.14);
   border-color: rgba(239, 68, 68, 0.30);
 }
-body.yan-login .alert.ok{
+
+body.yan-login .alert.ok {
   display: block;
   background: rgba(34, 197, 94, 0.14);
   border-color: rgba(34, 197, 94, 0.30);
 }
 
 /* Form fields */
-body.yan-login .field{
+body.yan-login .field {
   display: grid;
   gap: 0.45rem;
   margin-bottom: 1rem;
 }
 
-body.yan-login .label{
+body.yan-login .label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: rgba(255,255,255,0.95);
+  color: rgba(255, 255, 255, 0.95);
 }
 
-body.yan-login input{
+body.yan-login input {
   width: 100%;
   padding: 0.95rem 1rem;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(255,255,255,0.20);
-  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  background: rgba(255, 255, 255, 0.10);
   color: #fff;
   outline: none;
   transition: all var(--transition-fast);
 }
 
-body.yan-login input::placeholder{
-  color: rgba(255,255,255,0.70);
+body.yan-login input::placeholder {
+  color: rgba(255, 255, 255, 0.70);
 }
 
-body.yan-login input:focus{
-  background: rgba(255,255,255,0.14);
+body.yan-login input:focus {
+  background: rgba(255, 255, 255, 0.14);
   border-color: rgba(0, 180, 216, 0.90);
   box-shadow: 0 0 0 4px rgba(0, 180, 216, 0.22);
 }
 
 /* Password row */
-body.yan-login .passwordWrap{
+body.yan-login .passwordWrap {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 0.6rem;
   align-items: center;
 }
 
-body.yan-login .toggle{
+body.yan-login .toggle {
   padding: 0.9rem 1rem;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(255,255,255,0.20);
-  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  background: rgba(255, 255, 255, 0.10);
   color: #fff;
   font-weight: 800;
   cursor: pointer;
   transition: transform var(--transition-fast), background var(--transition-fast);
 }
 
-body.yan-login .toggle:hover{
-  background: rgba(255,255,255,0.16);
+body.yan-login .toggle:hover {
+  background: rgba(255, 255, 255, 0.16);
   transform: translateY(-1px);
 }
 
 /* Remember + forgot row */
-body.yan-login .row{
+body.yan-login .row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
   flex-wrap: wrap;
-  margin: 0.2rem 0 1rem;
+  margin: 0.2rem 0 1.15rem;
 }
 
-body.yan-login .check{
+body.yan-login .check {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
   font-size: 0.92rem;
-  color: rgba(255,255,255,0.92);
+  color: rgba(255, 255, 255, 0.92);
 }
 
-body.yan-login .check input{
+body.yan-login .check input {
   width: 16px;
   height: 16px;
   accent-color: var(--primary);
 }
 
-body.yan-login .link{
+body.yan-login .link {
   font-size: 0.92rem;
   font-weight: 700;
-  color: rgba(255,255,255,0.95);
+  color: rgba(255, 255, 255, 0.95);
   text-decoration: underline;
   text-underline-offset: 3px;
   opacity: 0.95;
 }
 
-body.yan-login .link:hover{
+body.yan-login .link:hover {
   opacity: 1;
 }
 
-/* Login button (scoped — doesn't change your global .btn) */
-body.yan-login .btn{
+/* Login button */
+body.yan-login .btn {
+  display: block;
   width: 100%;
+  margin-top: 0.35rem;
   padding: 1rem 1rem;
   border-radius: var(--radius-lg);
+  border: none;
   background: rgba(0, 180, 216, 0.95);
   color: #fff;
   font-weight: 800;
   letter-spacing: 0.2px;
-  box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
 }
 
-body.yan-login .btn:hover{
+body.yan-login .btn:hover {
   background: rgba(0, 150, 184, 0.98);
   transform: translateY(-2px);
-  box-shadow: 0 18px 34px rgba(0,0,0,0.22);
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.22);
 }
 
-body.yan-login .btn:disabled{
+body.yan-login .btn:disabled {
   opacity: 0.65;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
-/* Small screens */
-@media (max-width: 420px){
-  body.yan-login .card{
-    padding: 1.6rem 1.2rem;
+/* Tablet */
+@media (max-width: 768px) {
+  body.yan-login .main {
+    padding: 2rem 1rem 2.5rem;
+    align-items: flex-start;
+  }
+
+  body.yan-login .card {
+    max-width: 520px;
+    margin-top: 1.5rem;
+  }
+}
+
+/* Phone */
+@media (max-width: 480px) {
+  body.yan-login .main {
+    padding: 1.5rem 0.85rem 2rem;
+  }
+
+  body.yan-login .card {
+    padding: 1.5rem 1rem;
     border-radius: var(--radius-xl);
   }
-  body.yan-login .title{
+
+  body.yan-login .title {
     font-size: 1.7rem;
+  }
+
+  body.yan-login .passwordWrap {
+    grid-template-columns: 1fr;
+  }
+
+  body.yan-login .toggle {
+    width: 100%;
+  }
+
+  body.yan-login .row {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
