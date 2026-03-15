@@ -7,7 +7,7 @@ const loginForm = document.getElementById("loginForm");
 const identifierEl = document.getElementById("identifier");
 const passwordEl = document.getElementById("password");
 const rememberEl = document.getElementById("rememberMe");
-const loginBtn = document.getElementById("loginBtn");
+const loginBtn = document.getElementById("loginSubmitBtn");
 const alertEl = document.getElementById("alert");
 const togglePasswordBtn = document.getElementById("togglePassword");
 
@@ -90,6 +90,12 @@ function getDashboardPathByRole(role) {
   if (role === "admin") {
     return "/pages/dashboard/adminDashboard.html";
   }
+
+  if (role === "member") {
+    return "/pages/dashboard/memberDashboard.html";
+  }
+
+  return null;
 }
 
 loginForm.addEventListener("submit", async (e) => {
@@ -123,6 +129,14 @@ loginForm.addEventListener("submit", async (e) => {
 
     // Redirect by role
     const target = getDashboardPathByRole(result.role);
+
+    if (!target) {
+      showAlert("Login succeeded, but no destination is set for your account.")
+
+      setLoading(false);
+      return;
+    }
+    
     setTimeout(() => {
       window.location.href = target;
     }, 450);

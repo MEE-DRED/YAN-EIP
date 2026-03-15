@@ -240,3 +240,72 @@
 @media(max-width:900px){
   .mdGrid { grid-template-columns: 1fr; }
 }
+.mdHint { color: var(--text-secondary); font-size: 0.85rem; }
+.mdStack { display: grid; gap: 20px; }
+.mdStatusBadge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.mdStatusBadge.open { background: #e8f8ec; color: #176437; }
+.mdStatusBadge.locked { background: #fff4e8; color: #9f4f0f; }
+.mdQuarterTab.is-locked { opacity: 0.55; }
+
+.mdModuleCard.locked { opacity: 0.8; }
+.mdModuleTop { display: flex; justify-content: space-between; gap: 10px; }
+.mdModuleDesc { color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px; }
+.mdModuleBadge {
+  height: fit-content;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.mdModuleBadge.completed { background: #dff5e6; color: #116b36; }
+.mdModuleBadge.not-started { background: #ecf1f8; color: #345; }
+.mdMiniBar { margin-top: 6px; height: 6px; background: #e8edf4; border-radius: 999px; overflow: hidden; }
+.mdMiniFill { height: 100%; background: linear-gradient(90deg,#00BCD4,#0D47A1); }
+
+.mdLabel { display: block; margin: 10px 0 6px; font-size: 0.85rem; color: var(--text-secondary); }
+.mdInput, .mdSelect {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d6ddea;
+  border-radius: 8px;
+}
+.mdDropzone.drag-over { border-color: var(--secondary-color); background: #edf4ff; }
+
+.mdAlert { margin: 10px 0; padding: 8px 10px; border-radius: 8px; font-size: 0.86rem; }
+.mdAlert.hidden { display: none; }
+.mdAlert.success { background: #e6f8ec; color: #0f6a34; }
+.mdAlert.warning { background: #fff3e4; color: #9d4e0f; }
+.mdAlert.error { background: #ffeaea; color: #8e1f1f; }
+.mdAlert.info { background: #eaf2ff; color: #1d4e8f; }
+
+.mdHistoryItem {
+  border: 1px solid #ebeff5;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.mdHistoryTitle { font-weight: 600; font-size: 0.9rem; }
+.mdHistoryMeta { color: var(--text-secondary); font-size: 0.8rem; }
+.mdFileChip { background: #f1f5fb; padding: 4px 8px; border-radius: 999px; font-size: 0.75rem; }
+
+.mdFileRow { display: flex; align-items: center; gap: 10px; border: 1px solid #e8edf5; border-radius: 10px; padding: 10px; }
+.mdFileIcon { font-size: 1.1rem; }
+.mdFileName { font-weight: 600; font-size: 0.9rem; }
+.mdFileSize { color: var(--text-secondary); font-size: 0.8rem; }
+.mdFileRemove { margin-left: auto; border: none; background: transparent; font-size: 1.2rem; cursor: pointer; }
+
+.mdSubTitle { margin: 16px 0 8px; }
+.mdReportPreview { margin-top: 10px; border: 1px solid #e8edf5; border-radius: 10px; padding: 10px; font-size: 0.86rem; }
+.mdReportLine + .mdReportLine { margin-top: 4px; }
+
+.mdSmallModal { max-width: 600px; }
+.mdForm { padding: 16px; }
