@@ -32,7 +32,10 @@ const SESSION_GUIDE_FILES = {
     { course: "Project Designing & Management Training", label: "Project Designing & Management Training Session Guide", href:"/capacity.assets-q2/Project_designing_&_Management_training/Project_Design_and_Management_Facilitator_Session_Guide.pdf" },
   ],
   Q3: [
-    {  },
+    { course: "Sustainability Training", label:"Sustainability Training Session Guide", href:"/capacity.assets-q3/Sustainability_Training/sustainability_session_guide.pdf" },
+    { course: "Partnership and Networking", label:"Partnership and Networking Session Guide", href:"/capacity.assets-q3/Partnenrship_&_Networking/Partnership_and_Networking_session_guide.pdf" },
+    { course: "Grant Fundraising", label:"Grant fundraising Session Guide", href:"/capacity.assets-q3/Grant_fundraising/Grant_fundraising_training_session_guide.pdf" },
+    { course: "Financial Management", label:"Financial Management Session Guide", href:"/capacity.assets-q3/Financial_management/Financial_management_session_guide.pdf" },
   ],
   Q4: [
     { course: "Digital Advocacy", label: "Digital Advocacy Session Guides", href:"/capacity.assets-q4/Digital_Advocacy/FUD_&_DAC_Session_Guide.pdf" },
