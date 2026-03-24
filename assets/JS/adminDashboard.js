@@ -35,8 +35,8 @@ const SESSION_GUIDE_FILES = {
     {  },
   ],
   Q4: [
-    { course: "Digital Advocacy", label: "Digital Advocacy Session Guides", href:"/capacity.assets-q4/FUD_&_DAC_Session_Guide.pdf" },
-    { course: "Inclusive", label: "Inclusive Session Guide", href:"Inclusive_SESSION_GUIDE.pdf" },
+    { course: "Digital Advocacy", label: "Digital Advocacy Session Guides", href:"/capacity.assets-q4/Digital_Advocacy/FUD_&_DAC_Session_Guide.pdf" },
+    { course: "Inclusive", label: "Inclusive Session Guide", href:"/capacity.assets-q4/Inclusive/Inclusive_SESSION_GUIDE.pdf" },
   ],
 };
 
@@ -1312,7 +1312,7 @@ function init() {
   });
 
   $("sessionGuideBackBtn").addEventListener("click", showSessionGuideQuarters);
-  
+
   $("seedBtn").addEventListener("click", () => { seedDemoApplications(2); renderAll(); });
 
   $("goHomeBtn").addEventListener("click", () => window.location.href = "/index.html");
