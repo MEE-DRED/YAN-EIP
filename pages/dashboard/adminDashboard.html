@@ -28,6 +28,7 @@
       <nav class="admin-nav">
         <button class="active" data-view="applications">Applications</button>
         <button data-view="courses">Courses</button>
+        <button data-view="session-guides">Session Guides</button>
         <button data-view="assignments">Assignments</button>
         <button data-view="opportunities">Opportunities</button>
         <button data-view="events">Events</button>
@@ -193,6 +194,55 @@
           </div>
         </section>
 
+        <!--Session Guides-->
+        <section class="panel" id="view-session-guides" style="display: none;">
+          <div class="panel-header">
+            <div>
+              <h3>Session Guides</h3>
+              <div class="hint">Browse Session guides for each course</div>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="session-guides-quarters" id="sessionGuidesQuarterGrid">
+              <article class="session-quarter-card">
+                <h4>Quarter 1</h4>
+                <p>Leadership, resilience, and soft skills session guides.</p>
+                <a href="#" class="session-quarter-link" data-quarter="Q1">Q1 Session Guides</a>
+              </article>
+
+              <article class="session-quarter-card">
+                <h4>Quarter 2</h4>
+                <p>Monitoring & Evaluation, Project design & Management training</p>
+                <a href="#" class="session-quarter-link" data-quarter="Q2">Q2 Session Guides</a>
+              </article>
+
+              <article class="session-quarter-card">
+                <h4>Quarter 3</h4>
+                <p>Fundraising, Financial Management and Sustainability guides</p>
+                <a href="#" class="session-quarter-link" data-quarter="Q3">Q3 Session Guides</a>
+              </article>
+
+              <article class="session-quarter-card">
+                <h4>Quarter 4</h4>
+                <p>Inclusive, Digital Advocacy Session Guides</p>
+                <a href="#" class="session-quarter-link" data-quarter="Q4">Q4 Session Guides</a>
+              </article>
+            </div>
+
+            <div class="session-guides-list-view" id="sessionGuidesListView" style="display: none;">
+              <div class="session-guides-list-header">
+                <button class="btn-sm btn-soft" id="sessionGuideBackBtn">← Back</button>
+                <h4 id="sessionGuidesQuarterTitle">Quarter Session Guides</h4>
+              </div>
+              <ul class="session-guides-list" id="sessionGuidesList"></ul>
+              <div class="muted" id="sessionGuidesEmpty" style="display: none;">
+                No Session Guides available for this quarter yet!
+              </div>
+            </div>
+          </div>
+        </section>
+        
         <!--Assignments-->
         <section class="panel" id="view-assignments" style="display: none;">
           <div class="panel-header">

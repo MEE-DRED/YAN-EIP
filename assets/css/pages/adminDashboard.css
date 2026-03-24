@@ -596,3 +596,117 @@ body { background: #f6f8fb; }
   margin-top:8px;
   flex-wrap: wrap;
 }
+
+/* Session Guides */
+.session-guides-quarters{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.session-quarter-card{
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 16px;
+  padding: 16px;
+  background: linear-gradient(180deg, #ffffff, #f6f9ff);
+  box-shadow: var(--shadow-sm);
+}
+
+.session-quarter-card h4{
+  margin: 0;
+  color: var(--secondary);
+  font-weight: 900;
+}
+
+.session-quarter-card p{
+  margin: 10px 0 14px;
+  color: #4c5872;
+  font-weight: 700;
+}
+
+.session-quarter-link{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 800;
+  color: white;
+  text-decoration: none;
+  background: var(--gradient-primary);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.session-quarter-link:hover{
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.session-guides-list-view{
+  display: grid;
+  gap: 12px;
+}
+
+.session-guides-list-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.session-guides-list-header h4{
+  margin: 0;
+  color: var(--secondary);
+  font-weight: 900;
+}
+
+.session-guides-list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.session-guides-list li{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px;
+  background: #fff;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.session-guides-list li:last-child{
+  border-bottom: none;
+}
+
+.session-guides-course-name{
+  font-weight: 800;
+  color: #233;
+}
+
+.session-guides-file-link{
+  color: var(--secondary);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.session-guides-file-link:hover{
+  text-decoration: underline;
+}
+
+@media (max-width: 720px){
+  .session-guides-quarters{
+    grid-template-columns: 1fr;
+  }
+
+  .session-guides-list li{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

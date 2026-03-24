@@ -18,6 +18,26 @@ const state = {
   view: "applications",
   search: "",
   activeAppId: null, // currently opened application
+  activeSessionGuideQuarter: null,
+};
+
+const SESSION_GUIDE_FILES = {
+  Q1: [
+    { course: "Leadership", label: "Leadership Youth Session Guide", href:"/capacity_building-q1/Leadership/Leadership Youth Session guide ( Final).pdf" },
+    { course: "Resilience", label: "Resilience Session Guide", href: "/capacity_building-q1/Resilience/Resilience Session Guide.pdf" },
+    { course: "Soft Skills", label: "Soft Skills Session Guide", href: "/capacity_building-q1/Softskills/Session guide 3 (1).pdf" },
+  ],
+  Q2: [
+    { course: "Monitoring & Evaluation", label: "Monitoring & Evaluation Session Guide", href:"/capacity.assets-q2/Monitoring&Evaluation/Monitoring_&_Evaluation_and_Adaptive_Programming_Session_Guide.pdf" },
+    { course: "Project Designing & Management Training", label: "Project Designing & Management Training Session Guide", href:"/capacity.assets-q2/Project_designing_&_Management_training/Project_Design_and_Management_Facilitator_Session_Guide.pdf" },
+  ],
+  Q3: [
+    {  },
+  ],
+  Q4: [
+    { course: "Digital Advocacy", label: "Digital Advocacy Session Guides", href:"/capacity.assets-q4/FUD_&_DAC_Session_Guide.pdf" },
+    { course: "Inclusive", label: "Inclusive Session Guide", href:"Inclusive_SESSION_GUIDE.pdf" },
+  ],
 };
 
 function safeJSONParse(value, fallback) {
@@ -124,6 +144,8 @@ const VIEW_META = {
     onPrimary: () => { resetCourseForm(); $("courseTitle").focus(); } },
   assignments: { title: "Assignments", subtitle: "Create assignments linked to courses for members.", primary: "+ New Assignment",
     onPrimary: () => { resetAssignmentForm(); $("assignmentTitle").focus(); } },
+  "session-guides": { title: "Session Guides", subtitle: "Open Quarter Session Guides and Review Resources.", primary: "All Quarters",
+    onPrimary: () => {showSessionGuideQuarters(); } },
   opportunities: { title: "Opportunities", subtitle: "Add funding, training, and partnership opportunities.", primary: "+ New Opportunity",
     onPrimary: () => { resetOppForm(); $("oppTitle").focus(); } },
   events: { title: "Events", subtitle: "Add upcoming events for members and partners.", primary: "+ New Event",
@@ -140,6 +162,7 @@ function switchView(view) {
   const map = {
     applications: "view-applications",
     courses: "view-courses",
+    "session-guides": "view-session-guides",
     assignments: "view-assignments",
     opportunities: "view-opportunities",
     events: "view-events",
@@ -159,6 +182,60 @@ function switchView(view) {
   state.search = "";
 
   renderAll();
+}
+
+function showSessionGuideQuarters() {
+  state.activeSessionGuideQuarter = null;
+  $("sessionGuidesQuarterGrid").style.display = "grid";
+  $("sessionGuidesListView").style.display = "none";
+}
+
+function renderSessionGuidesList(quarter) {
+  const listEl = $("sessionGuidesList");
+  const emptyEl = $("sessionGuidesEmpty");
+  const titleEl = $("sessionGuidesQuarterTitle");
+  const quarterGrid = $("sessionGuidesQuarterGrid");
+  const listView = $("sessionGuidesListView");
+
+  state.activeSessionGuideQuarter = quarter;
+  titleEl.textContent = `${quarter} Session Guides`;
+  quarterGrid.style.display = "none";
+  listView.style.display = "grid";
+
+  let guides = SESSION_GUIDE_FILES[quarter] || [];
+  if (state.search) {
+    const q = state.search.toLowerCase();
+    guides = guides.filter((guide) =>
+      (guide.course || "").toLowerCase().includes(q) ||
+      (guide.label || "").toLowerCase().includes(q)
+    );
+  }
+
+  listEl.innerHTML = "";
+  if (!guides.length) {
+    emptyEl.style.display = "block";
+    return;
+  }
+
+  emptyEl.style.display = "none";
+  guides.forEach((guide) => {
+    listEl.insertAdjacentHTML("beforeend", `
+      <li>
+        <span class="session-guides-course-name">${escapeHTML(guide.course)}</span>
+        <a class="session-guides-file-link" href="${encodeURI(guide.href)}" target="_blank" rel="noopener noreferrer">
+          Open guide
+        </a>
+      </li>
+    `);
+  });
+}
+
+function renderSessionGuides() {
+  if (!state.activeSessionGuideQuarter) {
+    showSessionGuideQuarters();
+    return;
+  }
+  renderSessionGuidesList(state.activeSessionGuideQuarter);
 }
 
 /* ===== Courses (safe placeholders) ===== */
@@ -1173,6 +1250,7 @@ function renderAll() {
   if (state.view === "applications") renderApplications();
   if (state.view === "courses") renderCourses();
   if (state.view === "assignments") renderAssignments();
+  if (state.view === "session-guides") renderSessionGuides();
   if (state.view === "opportunities") renderOpps();
   if (state.view === "events") renderEvents();
 }
@@ -1224,7 +1302,17 @@ function init() {
   $("saveAssignmentBtn").addEventListener("click", saveAssignment);
   $("resetAssignmentBtn").addEventListener("click", resetAssignmentForm);
 
+  document.querySelectorAll(".session-quarter-link").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      const quarter = link.dataset.quarter;
+      if (!quarter) return;
+      renderSessionGuidesList(quarter);
+    });
+  });
 
+  $("sessionGuideBackBtn").addEventListener("click", showSessionGuideQuarters);
+  
   $("seedBtn").addEventListener("click", () => { seedDemoApplications(2); renderAll(); });
 
   $("goHomeBtn").addEventListener("click", () => window.location.href = "/index.html");
