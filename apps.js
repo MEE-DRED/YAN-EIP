@@ -753,16 +753,29 @@ const defaultEventsData = [
 ];
 
 const galleryImages = [
-    "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600",
-    "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600",
-    "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600",
-    "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600",
-    "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600",
-    "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600",
-    "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=600",
-    "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=600",
-    "https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=600"
-];
+    "Care & Help Child Org 2.jpg",
+    "Care & Help Child Org 4.jpg",
+    "Care & Help Child Org 6.jpg",
+    "Care & Help Child Org 8.jpg",
+    "Care & Help Child Org 10.jpg",
+    "Care & Help Child Org 12.jpg",
+    "Care & Help Child Org 14.jpg",
+    "Care & Help Child Org 16.jpg",
+    "Care & Help Child Org 18.jpg",
+    "Care & Help Child Org 20.jpg",
+    "Care & Help Child Org 22.jpg",
+    "Care & Help Child Org 24.jpg",
+    "20260324_164225.jpg",
+    "20260324_164228.jpg",
+    "20260324_164233.jpg",
+    "20260324_164248.jpg",
+    "20260324_164436.jpg",
+    // "aspire-debate-rwanda-image.png",
+    // "oazis-health-image.png",
+    // "ifg-image2.png",
+    // "what-if-rwanda-image.png",
+    // "yan-team-image.png"
+].map((fileName) => encodeURI(`images/pictures-yan/${fileName}`));
 
 // ================================
 // STATE MANAGEMENT
@@ -780,6 +793,46 @@ const adminEventsStorageKey = 'yan_events';
 
 const opportunitiesData = [...defaultOpportunitiesData];
 const eventsData = [...defaultEventsData];
+
+function getStoredAuth() {
+    try {
+        const localAuth = JSON.parse(localStorage.getItem('yan_auth') || 'null');
+        if (localAuth && localAuth.role) return localAuth;
+
+        const sessionAuth = JSON.parse(sessionStorage.getItem('yan_auth') || 'null');
+        if (sessionAuth && sessionAuth.role) return sessionAuth;
+    } catch (error) {
+        console.warn('Unable to parse auth data from storage.', error);
+    }
+
+    return null;
+}
+
+function syncNavbarLoginAction() {
+   const loginBtn = document.getElementById('loginBtn');
+   if (!loginBtn) return;
+   
+   const loginText = loginBtn.querySelector('.login-text');
+   const loginIcon = loginBtn.querySelector('.login-icon');
+   const loginAnchor = loginBtn.closest('a');
+
+   if (currentUser) {
+    if (loginText) loginText.textContent = 'logout';
+    if (loginIcon) loginIcon.textContent = '↗';
+    if (loginAnchor) loginAnchor.setAttribute('href', '#');
+
+    loginBtn.onClick = (event) => {
+        event.preventDefault();
+        logout();
+    };
+    return;
+   }
+
+   if (loginText) loginText.textContent = 'login';
+   if(loginIcon) loginIcon.textContent = '→';
+   if (loginAnchor) loginAnchor.setAttribute('href', '/pages/auth/login.html');
+   loginBtn.onclick = null;
+}
 
 // Initialize module progress from localStorage
 function getModuleProgress(moduleId) {
@@ -967,10 +1020,29 @@ document.addEventListener('DOMContentLoaded', () => {
 function initializeApp() {
     hydrateContentFromStorage();
 
-    currentUser = null;
-    localStorage.removeItem('yanUser');
-    currentRole = 'public';
-    localStorage.setItem('yanRole', 'public');
+    const auth = getStoredAuth();
+    if (auth?.role) {
+        const authName = auth.user?.name || auth.user?.identifier || 'Member';
+        const initials = authName
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0]?.toUpperCase() || '')
+            .join('') || 'MB';
+
+        currentUser = {
+            name: authName,
+            email: auth.user?.identifier || '',
+            initials
+        };
+        localStorage.setItem('yanUser', JSON.stringify(currentUser));
+        currentRole = auth.role;
+    } else {
+        currentUser = null;
+        localStorage.removeItem('yanUser');
+        currentRole = localStorage.getItem('yanRole') || 'public';
+    }
+    localStorage.setItem('yanRole', currentRole);
 
     // Initialize role
     updateRoleDisplay(currentRole);
@@ -1278,9 +1350,14 @@ function logout() {
     currentUser = null;
     localStorage.removeItem('yanUser');
     
-    // Hide profile, show login button
-    document.getElementById('loginBtn').style.display = '';
-    document.getElementById('profileDropdown').style.display = 'none';
+    localStorage.removeItem('yan_auth');
+    sessionStorage.removeItem('yan_auth');
+
+    const loginBtn = document.getElementById('loginBtn');
+    const profileDropdown = document.getElementById('profileDropdown');
+    if (loginBtn) loginBtn.style.display = '';
+    if (profileDropdown) profileDropdown.style.display = 'none';
+    syncNavbarLoginAction();
     
     // Return to public role
     updateRoleDisplay('public');
@@ -1293,8 +1370,11 @@ function logout() {
 }
 
 function showLoggedInState() {
-    document.getElementById('loginBtn').style.display = 'none';
-    document.getElementById('profileDropdown').style.display = 'flex';
+    const loginBtn = document.getElementById('loginBtn');
+    const profileDropdown = document.getElementById('profileDropdown');
+    if (loginBtn) loginBtn.style.display = '';
+    if (profileDropdown) profileDropdown.style.display = 'none';
+    syncNavbarLoginAction();
     
     // Update profile info
     const profileName = document.querySelector('.profile-name');
