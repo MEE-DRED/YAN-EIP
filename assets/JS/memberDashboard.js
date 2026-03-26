@@ -666,11 +666,17 @@
     const q = els.submissionQuarter.value || state.selectedQuarter;
     const mods = MODULES[q] || [];
     const select = els.submissionModule;
+    const quarterReportOptionValue = `quarter-report-${q.toLowerCase()}`;
 
     // preserve selection if possible
     const prev = select.value;
 
     select.innerHTML = `<option value="">Select module…</option>`;
+    const reportOption = document.createElement("option");
+    reportOption.value = quarterReportOptionValue;
+    reportOption.textContent = `${q} Quarterly Report`;
+    select.appendChild(reportOption);
+
     mods.forEach((m) => {
       const opt = document.createElement("option");
       opt.value = m.id;
@@ -953,7 +959,8 @@
       }
 
       const module = (MODULES[q] || []).find((m) => m.id === moduleId);
-      if (!module) return;
+      const isQuarterReport = moduleId === `quarter-report-${q.toLowerCase()}`;
+      if(!module && !isQuarterReport) return;
 
       try {
         const fileDataUrl = await readFileAsDataURL(selectedFile);
@@ -962,7 +969,7 @@
           id: `sub-${Date.now()}`,
           quarter: q,
           moduleId,
-          moduleTitle: module.title,
+          moduleTitle: module?.title || `${q} Quarterly Report`,
           fileName: selectedFile.name,
           fileSize: selectedFile.size,
           fileType: selectedFile.type || "application/octet-stream",

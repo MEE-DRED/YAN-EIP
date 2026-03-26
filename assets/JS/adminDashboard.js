@@ -599,6 +599,30 @@ function acceptApplication(id) {
   apps[idx].updatedAt = new Date().toISOString();
   saveList(LS_KEYS.APPS, apps);
 
+  const email = apps[idx].email || "";
+  const name = apps[idx].fullName || "Applicant";
+
+  const subject = "YAN Membership Application Accepted";
+  const body = 
+  `Hello ${name},
+  
+  Congratulations! After careful consideration, we are pleased to inform you that your application to join Youth Advocates Network (YAN) Rwanda has been accepted.
+  
+  Our team will share the next onboarding steps with you shortly.
+  
+  Kind Regards,
+  YAN Recruitment Team`;
+
+  if (email) {
+    const gmailUrl =
+    "https://mail.google.com/mail/?view=cm&fs=1" +
+    `&to=${encodeURIComponent(email)}` +
+    `&su=${encodeURIComponent(subject)}` +
+    `&body=${encodeURIComponent(body)}`;
+
+    window.open(gmailUrl, "_blank");
+  }
+
   renderAll();
 }
 
