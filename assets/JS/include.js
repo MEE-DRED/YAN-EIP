@@ -55,6 +55,44 @@ function initFounderReveal() {
   });
 }
 
+function getStoredAuth() {
+  try {
+    const localAuth = JSON.parse(localStorage.getItem("yan_auth") || "null");
+    if (localAuth && localAuth.role) return localAuth;
+
+    const sessionAuth = JSON.parse(sessionStorage.getItem("yan_auth") || "null");
+    if (sessionAuth && sessionAuth.role) return sessionAuth;
+  } catch (error) {
+    console.warn("Unable to parse auth state.", error);
+  }
+
+  return null;
+}
+
+function initNavbarAuthToggle() {
+  const loginBtn = document.getElementById("loginBtn");
+  if (!loginBtn) return;
+
+  const auth = getStoredAuth();
+  const isLoggedIn = Boolean(auth?.role);
+  const loginText = loginBtn.querySelector(".login-text");
+  const loginIcon = loginBtn.querySelector(".login-icon");
+  const loginAnchor = loginBtn.closest("a");
+
+  if (!isLoggedIn) return;
+
+  if (loginText) loginText.textContent = "Logout";
+  if (loginIcon) loginIcon.textContent = "↗";
+  if (loginAnchor) loginAnchor.setAttribute("href", "#");
+
+  loginBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    localStorage.removeItem("yan_auth");
+    sessionStorage.removeItem("yan_auth");
+    window.location.reload();
+  });
+}
+
 function getBasePathToRoot() {
   // Example paths:
   // /index.html -> depth 0 -> "."
@@ -83,4 +121,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   initNavbarToggle();
   initFounderReveal();
+  initNavbarAuthToggle();
 });
