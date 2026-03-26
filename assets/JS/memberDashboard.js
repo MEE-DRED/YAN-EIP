@@ -528,9 +528,6 @@
           <a class="mdResourceLink ${m.followUpUrl ? "" : "disabled"}" href="${m.followUpUrl ? encodeURI(m.followUpUrl) : "#"}" target="_blank" rel="noopener noreferrer" ${m.followUpUrl ? "" : 'aria-disabled="true" tabindex="-1"'}>
             Follow-up Resource
           </a>
-          <a class="mdResourceLink ${m.sessionUrl ? "" : "disabled"}" href="${m.sessionUrl ? encodeURI(m.sessionUrl) : "#"}" target="_blank" rel="noopener noreferrer" ${m.sessionUrl ? "" : 'aria-disabled="true" tabindex="-1"'}>
-            Session Guide
-          </a>
         </div>
 
         <div class="mdModuleActions">

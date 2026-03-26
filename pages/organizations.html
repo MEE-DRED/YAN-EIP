@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organizations - YAN</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="navbarMount"></div>
+
+  <!-- Spotlight Organizations -->
+    <section class="organizations-section" id="organizations">
+        <div class="container">
+            <div class="section-header">
+                <div>
+                    <div class="section-label">Our Network</div>
+                    <h2 class="section-title">Spotlight Organizations</h2>
+                    <p class="section-description">Featured members driving impact across Rwanda</p>
+                </div>
+                <button class="btn btn-outline" id="addOrgBtn" data-role="admin" style="display: none;">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Add Organization</span>
+                </button>
+            </div>
+            
+            <div class="organization-categories" id="organizationsGrid">
+                <!-- Sector categories and organization cards will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Rating Classification -->
+    <section class="impact-rating-section" id="impactRating">
+        <div class="container">
+            <div class="section-header">
+                <div>
+                    <div class="section-label">Impact Evidence</div>
+                    <h2 class="section-title">Impact Rating Classification</h2>
+                    <p class="section-description">Classification of spotlight organizations based on documented scale, sustainability, and measurable outcomes.</p>
+                </div>
+            </div>
+
+            <div class="impact-rating-grid" id="impactRatingGrid">
+                <!-- Impact rating cards will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+  
+  <div id="footerMount"></div>
+
+  <script src="/apps.js"></script>
+  <script src="/assets/JS/include.js"></script>
+</body>
+</html>
